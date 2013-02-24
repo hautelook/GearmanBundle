@@ -16,7 +16,7 @@
     },
     "suggest": {
         "ext-gearman": "The PECL Gearman extension"
-    }
+    },
     "autoload": {
         "psr-0": { "Hautelook\\GearmanBundle": "" }
     },
