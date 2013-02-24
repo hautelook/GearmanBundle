@@ -35,9 +35,9 @@ class Gearman
         if ($background) {
             if (GearmanJobInterface::PRIORITY_LOW == $priority) {
                 $jobHandle = $this->gearmanClient->doLowBackground($functionToCall, $workload);
-            } else if (GearmanJobInterface::PRIORITY_NORMAL == $priority) {
+            } elseif (GearmanJobInterface::PRIORITY_NORMAL == $priority) {
                 $jobHandle = $this->gearmanClient->doBackground($functionToCall, $workload);
-            } else if (GearmanJobInterface::PRIORITY_HIGH == $priority) {
+            } elseif (GearmanJobInterface::PRIORITY_HIGH == $priority) {
                 $jobHandle = $this->gearmanClient->doHighBackground($functionToCall, $workload);
             } else {
                 throw new \InvalidArgumentException("Priority not valid: {$priority}");
@@ -45,9 +45,9 @@ class Gearman
         } else {
             if (GearmanJobInterface::PRIORITY_LOW == $priority) {
                 $jobHandle = $this->gearmanClient->doLow($functionToCall, $workload);
-            } else if (GearmanJobInterface::PRIORITY_NORMAL == $priority) {
+            } elseif (GearmanJobInterface::PRIORITY_NORMAL == $priority) {
                 $jobHandle = $this->gearmanClient->doNormal($functionToCall, $workload);
-            } else if (GearmanJobInterface::PRIORITY_HIGH == $priority) {
+            } elseif (GearmanJobInterface::PRIORITY_HIGH == $priority) {
                 $jobHandle = $this->gearmanClient->doHigh($functionToCall, $workload);
             } else {
                 throw new \InvalidArgumentException("Priority not valid: {$priority}");
