@@ -1,0 +1,22 @@
+{
+    "name": "hautelook/gearman-bundle",
+    "description": "Symfony2 Bundle that provides a service to submit Gearman jobs",
+    "keywords": ["Symfony2", "Gearman"],
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Baldur Rensch",
+            "email": "brensch@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "symfony/framework-bundle": ">=2.1.0, <= 2.2.99"
+    },
+    "autoload": {
+        "psr-0": { "Hautelook\\GearmanBundle": "" }
+    },
+    "target-dir": "Hautelook/GearmanBundle",
+    "minimum-stability": "dev"
+}
