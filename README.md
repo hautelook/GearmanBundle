@@ -52,8 +52,54 @@ hautelook_gearman:
             port: 4567
 ```
 
+## Usage
+
+To start submitting a job, first create a class that represents the job:
+```php
+<?php
+
+namespace Acme\DemoBundle\GearmanJob;
+
+use namespace Hautelook\GearmanBundle\GearmanJobInterface;
+
+class StringReverse implements GearmanJobInterface
+{
+    private $string;
+
+    public function setString($string)
+    {
+        $this->string = $string;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getWorkload()
+    {
+        return serialize(array('str' => $string));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getFunctionName()
+    {
+        return 'string_reverse';
+    }
+}
+
+```
+Then, in order to submit a job, you can do something like:
+```php
+$job = new Acme\DemoBundle\GearmanJob\StringReverse();
+$job->setString('string to reverse');
+$jobHandle = $this->get('hautelook_gearman.service.gearman')->addJob($job);
+```
+
 ## To Do & Future plans
 
 - Functional tests
 - Ability to define the priority and background/foreground via interfaces
 - Add Gearman Exceptions back in
+- Add Gearman Monitor
+- Add service alias "gearman"
