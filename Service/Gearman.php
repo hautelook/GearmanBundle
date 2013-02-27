@@ -27,8 +27,11 @@ class Gearman
      * @param int                 $priority   What priority the job should be run as
      * @param string
      */
-    public function addJob(GearmanJobInterface $job, $background = true, $priority = GearmanJobInterface::PRIORITY_NORMAL)
-    {
+    public function addJob(
+        GearmanJobInterface $job,
+        $background = true,
+        $priority = GearmanJobInterface::PRIORITY_NORMAL
+    ) {
         $functionToCall = $job->getFunctionName();
         $workload       = $job->getWorkload();
 
