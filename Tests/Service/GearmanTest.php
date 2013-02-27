@@ -11,6 +11,8 @@ use \GearmanClient;
  */
 class GearmanTest extends \PHPUnit_Framework_TestCase
 {
+    protected $gearmanClient;
+
     protected function setUp()
     {
         $this->gearmanClient = $this->getMockBuilder('GearmanClient')
@@ -39,7 +41,8 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
             array('doBackground'    , true,  GearmanJobInterface::PRIORITY_NORMAL),
             array('doHighBackground', true,  GearmanJobInterface::PRIORITY_HIGH),
             array('doLow'           , false, GearmanJobInterface::PRIORITY_LOW),
-            // array('doNormal'        , false, GearmanJobInterface::PRIORITY_NORMAL), // This line produces a fatal error. WTF
+            // The next line produces a fatal error. WTF
+            // array('doNormal'        , false, GearmanJobInterface::PRIORITY_NORMAL),
             array('doHigh'          , false, GearmanJobInterface::PRIORITY_HIGH),
         );
 
@@ -68,7 +71,7 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
     {
         $job = new TestJob();
 
-        $returnValue = $this->gearmanService->addJob($job, true, 4);
+        $this->gearmanService->addJob($job, true, 4);
     }
 
     /**
@@ -78,7 +81,7 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
     {
         $job = new TestJob();
 
-        $returnValue = $this->gearmanService->addJob($job, false, 4);
+        $this->gearmanService->addJob($job, false, 4);
     }
 }
 

@@ -76,7 +76,7 @@ class StringReverse implements GearmanJobInterface
      */
     public function getWorkload()
     {
-        return serialize(array('str' => $string));
+        return serialize(array('str' => $this->string));
     }
 
     /**
