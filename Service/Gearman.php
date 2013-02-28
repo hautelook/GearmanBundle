@@ -3,6 +3,7 @@
 namespace Hautelook\GearmanBundle\Service;
 
 use Hautelook\GearmanBundle\GearmanJobInterface;
+use Hautelook\GearmanBundle\EnvironmentAwareGearmanJobInterface;
 
 /**
  * @author Baldur Rensch <baldur.rensch@hautelook.com>
@@ -10,6 +11,7 @@ use Hautelook\GearmanBundle\GearmanJobInterface;
 class Gearman
 {
     protected $gearmanClient;
+    protected $environment;
 
     public function __construct(\GearmanClient $gearmanClient)
     {
@@ -35,6 +37,10 @@ class Gearman
         $functionToCall = $job->getFunctionName();
         $workload       = $job->getWorkload();
 
+        if ($job instanceof EnvironmentAwareGearmanJobInterface) {
+            $workload = $this->injectWorkloadEnvironment($workload);
+        }
+
         if ($background) {
             if (GearmanJobInterface::PRIORITY_LOW == $priority) {
                 $jobHandle = $this->gearmanClient->doLowBackground($functionToCall, $workload);
@@ -58,5 +64,37 @@ class Gearman
         }
 
         return $jobHandle;
+    }
+
+    /**
+     * Sets the Gearman environment.
+     * @param string $environment Gearman Environment
+     */
+    public function setEnvironment($environment)
+    {
+        $this->environment = $environment;
+    }
+
+    /**
+     * Return Gearman Environment.
+     * @return string Gearman Environment
+     */
+    public function getEnvironment()
+    {
+        return $this->environment;
+    }
+
+    /**
+     * Inject environment values for jobs that expect it.
+     * @param  string $workload Serialized workload from GearmanJobInterface object
+     * @return string Serialized workload with environment values injected
+     */
+    public function injectWorkloadEnvironment($workload)
+    {
+        $workload = unserialize($workload);
+        $workload['site_env'] = $this->getEnvironment();
+        $workload = serialize($workload);
+
+        return $workload;
     }
 }
