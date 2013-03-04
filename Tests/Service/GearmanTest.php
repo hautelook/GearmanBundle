@@ -2,9 +2,12 @@
 
 namespace Hautelook\GearmanBundle\Tests\Service;
 
+use \GearmanClient;
+
 use Hautelook\GearmanBundle\GearmanJobInterface;
 use Hautelook\GearmanBundle\Service\Gearman as GearmanService;
-use \GearmanClient;
+use Hautelook\GearmanBundle\Event\GearmanEvents;
+use Hautelook\GearmanBundle\Event\BindWorkloadDataEvent;
 
 /**
  * @author Baldur Rensch <baldur.rensch@hautelook.com>
@@ -13,6 +16,7 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
 {
     protected $gearmanClient;
     protected $gearmanService;
+    protected $eventDispatcher;
 
     protected function setUp()
     {
@@ -20,7 +24,10 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $this->gearmanClient->addServer('localhost', 4730);
 
-        $this->gearmanService = new GearmanService($this->gearmanClient);
+        $this->eventDispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcher')
+            ->getMock();
+
+        $this->gearmanService = new GearmanService($this->gearmanClient, $this->eventDispatcher);
     }
 
     public function testDefaultPriorityAndBackground()
@@ -28,7 +35,7 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
         $job = new TestJob();
 
         $this->gearmanClient->expects($this->once())->method('doBackground')
-            ->with('testfunction', 'workload')
+            ->with('testfunction', serialize('workload'))
             ->will($this->returnValue('jobHandle'));
 
         $returnValue = $this->gearmanService->addJob($job);
@@ -38,7 +45,7 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
 
     public function gearmanFunctionsToCall()
     {
-        $doNormal = method_exists(new GearmanClient(), 'doNormal') ? 'doNormal' : 'do';
+        // $doNormal = method_exists(new GearmanClient(), 'doNormal') ? 'doNormal' : 'do';
         $arr = array(
             array('doLowBackground' , true,  GearmanJobInterface::PRIORITY_LOW),
             array('doBackground'    , true,  GearmanJobInterface::PRIORITY_NORMAL),
@@ -63,7 +70,7 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
         $job = new TestJob();
 
         $this->gearmanClient->expects($this->once())->method($functionToCall)
-            ->with('testfunction', 'workload')
+            ->with('testfunction', serialize('workload'))
             ->will($this->returnValue('jobHandle'));
 
         $returnValue = $this->gearmanService->addJob($job, $background, $priority);
@@ -88,6 +95,25 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
         $job = new TestJob();
 
         $this->gearmanService->addJob($job, false, 4);
+    }
+
+    public function testEventDispatch()
+    {
+        $job = new TestJob();
+
+        $this->gearmanClient->expects($this->once())->method('doBackground')
+            ->with('testfunction', serialize('workload'))
+            ->will($this->returnValue('jobHandle'));
+
+        $event = new BindWorkloadDataEvent($job);
+
+        // Verify that the dipatcher was called with the appropriate event
+        $this->eventDispatcher
+            ->expects($this->once())
+            ->method('dispatch')
+            ->with(GearmanEvents::BIND_WORKLOAD, $event);
+
+        $this->gearmanService->addJob($job);
     }
 }
 
