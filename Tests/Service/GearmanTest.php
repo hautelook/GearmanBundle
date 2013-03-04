@@ -2,9 +2,10 @@
 
 namespace Hautelook\GearmanBundle\Tests\Service;
 
+
 use \GearmanClient;
 
-use Hautelook\GearmanBundle\GearmanJobInterface;
+use Hautelook\GearmanBundle\Model\GearmanJobInterface;
 use Hautelook\GearmanBundle\Service\Gearman as GearmanService;
 use Hautelook\GearmanBundle\Event\GearmanEvents;
 use Hautelook\GearmanBundle\Event\BindWorkloadDataEvent;
@@ -38,9 +39,9 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
             ->with('testfunction', serialize('workload'))
             ->will($this->returnValue('jobHandle'));
 
-        $returnValue = $this->gearmanService->addJob($job);
+        $jobStatus = $this->gearmanService->addJob($job);
 
-        $this->assertEquals('jobHandle', $returnValue);
+        $this->assertTrue($jobStatus->isSuccessful());
     }
 
     public function gearmanFunctionsToCall()
@@ -73,8 +74,8 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
             ->with('testfunction', serialize('workload'))
             ->will($this->returnValue('jobHandle'));
 
-        $returnValue = $this->gearmanService->addJob($job, $background, $priority);
-        $this->assertEquals('jobHandle', $returnValue);
+        $jobStatus = $this->gearmanService->addJob($job, $background, $priority);
+        $this->assertTrue($jobStatus->isSuccessful());
     }
 
     /**
@@ -114,6 +115,21 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
             ->with(GearmanEvents::BIND_WORKLOAD, $event);
 
         $this->gearmanService->addJob($job);
+    }
+
+    public function testGearmanJobStatus()
+    {
+        $job = new TestJob();
+
+        $this->gearmanClient->expects($this->once())->method('doBackground')
+            ->with('testfunction', serialize('workload'))
+            ->will($this->returnValue('jobHandle'));
+
+        $jobStatus = $this->gearmanService->addJob($job);
+
+        $this->assertEquals('jobHandle', $jobStatus->getHandle());
+        $this->assertEquals($job->getWorkload(), $jobStatus->getWorkload());
+        $this->assertEquals($job->getFunctionName(), $jobStatus->getFunctionName());
     }
 }
 
