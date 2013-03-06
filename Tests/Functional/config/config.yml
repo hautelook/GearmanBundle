@@ -1,0 +1,19 @@
+imports:
+    - { resource: "@TestBundle/Resources/config/services.yml" }
+
+framework:
+    secret: test
+    router:
+        resource: "%kernel.root_dir%/config/routing.yml"
+    form: ~
+    validation: ~
+    session: ~
+
+hautelook_gearman:
+    servers:
+        server1:
+            host: localhost
+            port: 1234
+        server2:
+            host: localhost
+            port: 4567

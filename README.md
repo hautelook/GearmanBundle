@@ -98,8 +98,7 @@ $jobHandle = $this->get('hautelook_gearman.service.gearman')->addJob($job);
 
 ## To Do & Future plans
 
-- Functional tests
-- Ability to define the priority and background/foreground via interfaces
+- Ability to define the priority and background/foreground via the job
 - Add Gearman Exceptions back in
 - Add Gearman Monitor
 - Add service alias "gearman"
