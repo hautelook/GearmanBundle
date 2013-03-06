@@ -12,11 +12,13 @@ use \GearmanClient;
 class GearmanTest extends \PHPUnit_Framework_TestCase
 {
     protected $gearmanClient;
+    protected $gearmanService;
 
     protected function setUp()
     {
         $this->gearmanClient = $this->getMockBuilder('GearmanClient')
             ->getMock();
+        $this->gearmanClient->addServer('localhost', 4730);
 
         $this->gearmanService = new GearmanService($this->gearmanClient);
     }
@@ -36,13 +38,17 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
 
     public function gearmanFunctionsToCall()
     {
+        $doNormal = method_exists(new GearmanClient(), 'doNormal') ? 'doNormal' : 'do';
         $arr = array(
             array('doLowBackground' , true,  GearmanJobInterface::PRIORITY_LOW),
             array('doBackground'    , true,  GearmanJobInterface::PRIORITY_NORMAL),
             array('doHighBackground', true,  GearmanJobInterface::PRIORITY_HIGH),
             array('doLow'           , false, GearmanJobInterface::PRIORITY_LOW),
-            // The next line produces a fatal error. WTF
-            // array('doNormal'        , false, GearmanJobInterface::PRIORITY_NORMAL),
+            // The following line causes issues:
+            // 1) Hautelook\GearmanBundle\Tests\Service\GearmanTest::testCorrectGearmanFunctionCalled with
+            // data set #4 ('do', false, 1)
+            // GearmanClient::do(): _client_run_task:no servers added
+            // array($doNormal         , false, GearmanJobInterface::PRIORITY_NORMAL),
             array('doHigh'          , false, GearmanJobInterface::PRIORITY_HIGH),
         );
 

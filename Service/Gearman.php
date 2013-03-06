@@ -49,7 +49,11 @@ class Gearman
             if (GearmanJobInterface::PRIORITY_LOW == $priority) {
                 $jobHandle = $this->gearmanClient->doLow($functionToCall, $workload);
             } elseif (GearmanJobInterface::PRIORITY_NORMAL == $priority) {
-                $jobHandle = $this->gearmanClient->doNormal($functionToCall, $workload);
+                if (method_exists($this->gearmanClient, 'doNormal')) {
+                    $jobHandle = $this->gearmanClient->doNormal($functionToCall, $workload);
+                } else {
+                    $jobHandle = $this->gearmanClient->do($functionToCall, $workload);
+                }
             } elseif (GearmanJobInterface::PRIORITY_HIGH == $priority) {
                 $jobHandle = $this->gearmanClient->doHigh($functionToCall, $workload);
             } else {
