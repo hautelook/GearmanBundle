@@ -55,12 +55,13 @@ hautelook_gearman:
 ## Usage
 
 To start submitting a job, first create a class that represents the job:
+
 ```php
 <?php
 
 namespace Acme\DemoBundle\GearmanJob;
 
-use namespace Hautelook\GearmanBundle\GearmanJobInterface;
+use Hautelook\GearmanBundle\GearmanJobInterface;
 
 class StringReverse implements GearmanJobInterface
 {
@@ -89,11 +90,50 @@ class StringReverse implements GearmanJobInterface
 }
 
 ```
+
 Then, in order to submit a job, you can do something like:
+
 ```php
 $job = new Acme\DemoBundle\GearmanJob\StringReverse();
 $job->setString('string to reverse');
 $jobHandle = $this->get('hautelook_gearman.service.gearman')->addJob($job);
+```
+
+### Event Listener
+
+The bundle will dispatch an event of type `gearman.bind.workload` right before binding the workload to the job.
+You can add a listener, to add additional information to the workload, do logging, etc.
+
+#### Example Listener
+
+```php
+<?php
+
+namespace Acme\DemoBundle\EventListener;
+
+use Hautelook\GearmanBundle\Event\BindWorkloadDataEvent;
+
+class GearmanListener
+{
+    public function onBindWorkload(BindWorkloadDataEvent $event)
+    {
+        $job = $event->getJob();
+
+        $this->injectWorkloadEnvironment($job);
+    }
+
+    private function injectWorkloadEnvironment($job)
+    {
+        // Do something
+    }
+}
+```
+Define the service, and tag it as a listener:
+
+```xml
+<service id="acme.gearman.listener" class="Acme\DemoBundle\EventListener\GearmanListener">
+    <tag name="kernel.event_listener" event="gearman.bind.workload" method="onBindWorkload" />
+</service>
 ```
 
 ## To Do & Future plans
