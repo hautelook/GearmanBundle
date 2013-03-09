@@ -1,5 +1,7 @@
 <?php
 
+define('GEARMAN_SUCCESS', 0);
+
 class GearmanClient
 {
     public function addOptions($options) {}

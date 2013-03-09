@@ -3,9 +3,11 @@
 namespace Hautelook\GearmanBundle\Service;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Hautelook\GearmanBundle\GearmanJobInterface;
+
 use Hautelook\GearmanBundle\Event\BindWorkloadDataEvent;
 use Hautelook\GearmanBundle\Event\GearmanEvents;
+use Hautelook\GearmanBundle\Model\GearmanJobInterface;
+use Hautelook\GearmanBundle\Model\GearmanJobStatus;
 
 /**
  * @author Baldur Rensch <baldur.rensch@hautelook.com>
@@ -37,7 +39,7 @@ class Gearman
      * @param GearmanJobInterface $job        The job to be done
      * @param boolean             $background Whether the job should be run in the background
      * @param int                 $priority   What priority the job should be run as
-     * @return string
+     * @return GearmanJobStatus Object containing the job handle and return code for the
      */
     public function addJob(
         GearmanJobInterface $job,
@@ -78,6 +80,6 @@ class Gearman
             }
         }
 
-        return $jobHandle;
+        return new GearmanJobStatus($job, $jobHandle, $this->gearmanClient->returnCode());
     }
 }

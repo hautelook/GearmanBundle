@@ -1,6 +1,6 @@
 <?php
 
-namespace Hautelook\GearmanBundle;
+namespace Hautelook\GearmanBundle\Model;
 
 /**
  * @author Baldur Rensch <baldur.rensch@hautelook.com>

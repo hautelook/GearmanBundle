@@ -4,7 +4,7 @@ namespace Hautelook\GearmanBundle\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 
-use Hautelook\GearmanBundle\GearmanJobInterface;
+use Hautelook\GearmanBundle\Model\GearmanJobInterface;
 
 class BindWorkloadDataEvent extends Event
 {
