@@ -77,7 +77,7 @@ class StringReverse implements GearmanJobInterface
      */
     public function getWorkload()
     {
-        return serialize(array('str' => $this->string));
+        return array('str' => $this->string);
     }
 
     /**
@@ -96,7 +96,10 @@ Then, in order to submit a job, you can do something like:
 ```php
 $job = new Acme\DemoBundle\GearmanJob\StringReverse();
 $job->setString('string to reverse');
-$jobHandle = $this->get('hautelook_gearman.service.gearman')->addJob($job);
+$jobStatus = $this->get('hautelook_gearman.service.gearman')->addJob($job);
+if (!$jobStatus->isSuccessful()) {
+    $logger->err("Gearman Job " . $jobStatus->getFunctionName() . " failed with " . $jobStatus->getReturnCode());
+}
 ```
 
 ### Event Listener
