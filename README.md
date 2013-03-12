@@ -3,7 +3,7 @@ GearmanBundle
 
 A bundle that provides an interface to submit Gearman jobs
 
-[![Build Status](https://magnum.travis-ci.com/hautelook/GearmanBundle.png?token=xYuNngLNi9oEKhdeDuxP&branch=master)](https://magnum.travis-ci.com/hautelook/GearmanBundle)
+[![Build Status](https://travis-ci.org/hautelook/GearmanBundle.png?branch=master)](https://travis-ci.org/hautelook/GearmanBundle)
 
 ## Introduction
 
