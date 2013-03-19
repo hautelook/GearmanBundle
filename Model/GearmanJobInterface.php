@@ -20,6 +20,13 @@ interface GearmanJobInterface
     public function getWorkload();
 
     /**
+     * This function can be called to set the workload. This is mostly for listeners that want to manipulate
+     * workload parameters
+     * @param array $workload
+     */
+    public function setWorkload(array $workload);
+
+    /**
      * This function needs to return the Gearman function to call
      * @return string
      */
