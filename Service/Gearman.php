@@ -36,10 +36,10 @@ class Gearman
 
     /**
      * This adds a job to the Gearman queue.
-     * @param GearmanJobInterface $job        The job to be done
-     * @param boolean             $background Whether the job should be run in the background
-     * @param int                 $priority   What priority the job should be run as
-     * @return GearmanJobStatus Object containing the job handle and return code for the
+     * @param  GearmanJobInterface $job        The job to be done
+     * @param  boolean             $background Whether the job should be run in the background
+     * @param  int                 $priority   What priority the job should be run as
+     * @return GearmanJobStatus    Object containing the job handle and return code for the
      */
     public function addJob(
         GearmanJobInterface $job,
