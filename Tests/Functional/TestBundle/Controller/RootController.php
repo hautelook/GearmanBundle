@@ -11,6 +11,7 @@ class RootController extends Controller
     public function testAction(Request $request)
     {
         $this->get('hautelook_gearman.service.gearman');
+
         return new Response("TestResponse");
     }
 }

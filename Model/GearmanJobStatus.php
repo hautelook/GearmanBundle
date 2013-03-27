@@ -17,9 +17,9 @@ class GearmanJobStatus
 
     /**
      * Create a GearmanJobStatus object.  Store the job handle and return code for the task.
-     * @param GearmanJobInterface $job The job
-     * @param string $handle     Gearman job handle
-     * @param int $returnCode Result of GearmanClient::returnCode()
+     * @param GearmanJobInterface $job        The job
+     * @param string              $handle     Gearman job handle
+     * @param int                 $returnCode Result of GearmanClient::returnCode()
      */
     public function __construct(GearmanJobInterface $job, $handle, $returnCode)
     {

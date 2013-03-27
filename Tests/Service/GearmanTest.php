@@ -2,7 +2,6 @@
 
 namespace Hautelook\GearmanBundle\Tests\Service;
 
-
 use \GearmanClient;
 
 use Hautelook\GearmanBundle\Model\GearmanJobInterface;
@@ -143,5 +142,9 @@ class TestJob implements GearmanJobInterface
     public function getFunctionName()
     {
         return 'testfunction';
+    }
+
+    public function setWorkload(array $workload)
+    {
     }
 }
