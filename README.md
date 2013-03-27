@@ -88,6 +88,9 @@ class StringReverse implements GearmanJobInterface
         return 'string_reverse';
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function setWorkload(array $workload)
     {
         if (isset($workload['str'])) {
