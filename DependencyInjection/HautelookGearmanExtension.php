@@ -27,6 +27,9 @@ class HautelookGearmanExtension extends Extension
         $gearmanClient = $container->getDefinition('hautelook_gearman.service.gearman_client');
         foreach ($config['servers'] as $serverName => $server) {
             $gearmanClient->addMethodCall('addServer', array($server['host'], $server['port']));
+            $config['servers'][$serverName]['timeout'] = 1;
         }
+
+        $container->setParameter('servers', $config['servers']);
     }
 }

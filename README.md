@@ -149,9 +149,21 @@ Define the service, and tag it as a listener:
 </service>
 ```
 
+### Gearman Monitor
+
+The bundle provides a console command that you can run like this:
+
+```bash
+$ app/console hautelook:gearman:status
+Status for Server server1
+
+solr_update_item_inventory Jobs: 0 Workers: 0 / 0
+solr_update_item_popularity Jobs: 0 Workers: 0 / 0
+solr_update_item Jobs: 4261 Workers: 1 / 1
+```
+
 ## To Do & Future plans
 
 - Ability to define the priority and background/foreground via the job
 - Add Gearman Exceptions back in
-- Add Gearman Monitor
 - Add service alias "gearman"
