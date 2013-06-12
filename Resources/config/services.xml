@@ -6,6 +6,7 @@
 
     <parameters>
         <parameter key="hautelook_gearman.gearman.service.class">Hautelook\GearmanBundle\Service\Gearman</parameter>
+        <parameter key="hautelook_gearman.gearman.telnet_client.class">TweeGearmanStat\Queue\Gearman</parameter>
     </parameters>
 
     <services>
@@ -15,6 +16,10 @@
         </service>
 
         <service id="hautelook_gearman.service.gearman_client" class="GearmanClient" public="false"/>
+
+        <service id="hautelook_gearman.service.telnet_client" class="%hautelook_gearman.gearman.telnet_client.class%">
+            <argument>%servers%</argument>
+        </service>
     </services>
 
 </container>
