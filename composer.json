@@ -17,7 +17,9 @@
     "require": {
         "php": ">=5.3.0",
         "symfony/framework-bundle": "~2.1",
-        "symfony/event-dispatcher": "~2.1"
+        "symfony/event-dispatcher": "~2.1",
+        "symfony/console": "~2.1",
+        "necromant2005/gearman-stats": "dev-master"
     },
     "require-dev": {
         "symfony/browser-kit": "~2.1",
