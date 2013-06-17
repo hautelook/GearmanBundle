@@ -16,7 +16,7 @@ before_script:
   - sh -c "cd gearman-0.8.3 && phpize && ./configure && make && sudo make install && cd .."
   - echo "extension=gearman.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
   - wget http://getcomposer.org/composer.phar
-  - php composer.phar install --dev
+  - php composer.phar install --dev --prefer-source --no-interaction
 
 script:
   - phpunit -c phpunit.xml.dist --coverage-text
