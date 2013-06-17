@@ -32,10 +32,23 @@ class GearmanClientCommand extends ContainerAwareCommand
         foreach ($status as $server => $queues) {
             $output->writeln("<info>Status for Server {$server}</info>");
             $output->writeln("");
-            foreach ($queues as $queue) {
-                $str  = "<comment>{$queue['name']}</comment> Jobs: {$queue['queue']}";
-                $str .= " Workers: {$queue['running']} / {$queue['workers']}";
-                $output->writeln($str);
+
+            if ($this->getHelperSet()->has('table')) {
+                // Symfony 2.3 console goodness
+                /** @var $table \Symfony\Component\Console\Helper\TableHelper */
+                $table = $this->getHelperSet()->get('table');
+
+                $table
+                    ->setHeaders(array('Queue', 'Jobs', 'Workers working', 'Workers total'))
+                    ->setRows($queues);
+
+                $table->render($output);
+            } else {
+                foreach ($queues as $queue) {
+                    $str = "<comment>{$queue['name']}</comment> Jobs: {$queue['queue']}";
+                    $str .= " Workers: {$queue['running']} / {$queue['workers']}";
+                    $output->writeln($str);
+                }
             }
         }
     }
