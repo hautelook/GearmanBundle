@@ -1,5 +1,4 @@
 # Symfony directories
 vendor/*
-.idea
 
 composer.lock
