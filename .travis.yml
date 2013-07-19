@@ -2,6 +2,12 @@ language: php
 php:
   - 5.3
   - 5.4
+  - 5.5
+
+matrix:
+    allow_failures:
+        - php: 5.5
+
 
 before_script:
   - sh -c "sudo apt-get install uuid-dev"
@@ -15,8 +21,7 @@ before_script:
   - tar -xzf gearman-0.8.3.tgz
   - sh -c "cd gearman-0.8.3 && phpize && ./configure && make && sudo make install && cd .."
   - echo "extension=gearman.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
-  - wget http://getcomposer.org/composer.phar
-  - php composer.phar install --dev --prefer-source --no-interaction
+  - composer install --prefer-source --no-interaction
 
 script:
   - phpunit -c phpunit.xml.dist --coverage-text

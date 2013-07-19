@@ -48,3 +48,28 @@ class GearmanClient
     public function setWorkloadCallback($callback) {}
     public function timeout() {}
 }
+
+class GearmanWorker
+{
+    public function addFunction($function_name, $function, &$context = null, $timeout = 0) {}
+    public function addOptions($option) {}
+    public function addServer($host = '127.0.0.1', $port = 4730) {}
+    public function addServers($servers = '127.0.0.1:4730') {}
+    public function __clone() {}
+    public function __construct() {}
+    // echo Function omitted
+    public function error() {}
+    public function getErrno() {}
+    public function options() {}
+    public function register($function_name, $timeout) {}
+    public function removeOptions($option) {}
+    public function returnCode() {}
+    public function setId($id) {}
+    public function setOptions($option) {}
+    public function setTimeout($timeout) {}
+    public function timeout() {}
+    public function unregister($function_name) {}
+    public function unregisterAll() {}
+    public function wait() {}
+    public function work() {}
+}

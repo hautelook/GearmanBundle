@@ -2,6 +2,7 @@
 
 namespace Hautelook\GearmanBundle\Service;
 
+use Hautelook\GearmanBundle\Model\GearmanWorker;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 use Hautelook\GearmanBundle\Event\BindWorkloadDataEvent;
@@ -20,25 +21,35 @@ class Gearman
     protected $gearmanClient;
 
     /**
-     * @var Symfony\Component\EventDispatcher\EventDispatcher
+     * @var \Symfony\Component\EventDispatcher\EventDispatcher
      */
     protected $dispatcher;
 
     /**
+     * @var array<string, array>
+     */
+    protected $servers;
+
+    /**
      * @param \GearmanClient  $gearmanClient
      * @param EventDispatcher $dispatcher
+     * @param                 $servers
      */
-    public function __construct(\GearmanClient $gearmanClient, EventDispatcher $dispatcher)
+    public function __construct(\GearmanClient $gearmanClient, EventDispatcher $dispatcher, $servers)
     {
         $this->gearmanClient = $gearmanClient;
         $this->dispatcher = $dispatcher;
+        $this->servers = $servers;
     }
 
     /**
      * This adds a job to the Gearman queue.
+     *
      * @param  GearmanJobInterface $job        The job to be done
      * @param  boolean             $background Whether the job should be run in the background
-     * @param  int                 $priority   What priority the job should be run as
+     * @param int                  $priority   What priority the job should be run as
+     *
+     * @throws \InvalidArgumentException
      * @return GearmanJobStatus    Object containing the job handle and return code for the
      */
     public function addJob(
@@ -81,5 +92,45 @@ class Gearman
         }
 
         return new GearmanJobStatus($job, $jobHandle, $this->gearmanClient->returnCode());
+    }
+
+    /**
+     * Creates a worker with the given job name. The worker will call the $callBackName function
+     * on a $fqClassName object.
+     *
+     * @param string $jobName
+     * @param string $fqClassName
+     * @param string $callBackName
+     *
+     * @return GearmanWorker
+     */
+    public function createWorker($jobName, $fqClassName, $callBackName)
+    {
+        $worker = new GearmanWorker($this->servers);
+
+        $workerObj = new $fqClassName();
+        $worker->addCallbackFunction($jobName, array($workerObj, $callBackName));
+
+        return $worker;
+    }
+
+    /**
+     * This function creates a worker that does a NOOP with the job, i.e. just consumes the workload
+     *
+     * @param string $jobName
+     *
+     * @return GearmanWorker
+     */
+    public function createNoopWorker($jobName)
+    {
+        $worker = new GearmanWorker($this->servers);
+
+        $noop = function () {
+            // Do nothing
+        };
+
+        $worker->addCallbackFunction($jobName, $noop);
+
+        return $worker;
     }
 }

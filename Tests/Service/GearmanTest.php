@@ -15,19 +15,30 @@ use Hautelook\GearmanBundle\Event\BindWorkloadDataEvent;
 class GearmanTest extends \PHPUnit_Framework_TestCase
 {
     protected $gearmanClient;
+
+    /**
+     * @var GearmanService
+     */
     protected $gearmanService;
+
     protected $eventDispatcher;
 
     protected function setUp()
     {
+        $servers = array('test_server_1' =>
+            array('host' => 'localhost', 'port' => 4730),
+        );
         $this->gearmanClient = $this->getMockBuilder('GearmanClient')
             ->getMock();
-        $this->gearmanClient->addServer('localhost', 4730);
+
+        foreach (array_values($servers) as $server) {
+            $this->gearmanClient->addServer($server['host'], $server['port']);
+        }
 
         $this->eventDispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcher')
             ->getMock();
 
-        $this->gearmanService = new GearmanService($this->gearmanClient, $this->eventDispatcher);
+        $this->gearmanService = new GearmanService($this->gearmanClient, $this->eventDispatcher, $servers);
     }
 
     public function testDefaultPriorityAndBackground()
@@ -130,6 +141,24 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($job->getWorkload(), $jobStatus->getWorkload());
         $this->assertEquals($job->getFunctionName(), $jobStatus->getFunctionName());
     }
+
+    public function testCreateWorker()
+    {
+
+        $worker = $this->gearmanService->createWorker(
+            'test_job',
+            'Hautelook\\GearmanBundle\\Tests\\Service\\TestWorker',
+            'work'
+        );
+
+        $this->assertInstanceOf('Hautelook\GearmanBundle\Model\GearmanWorker', $worker);
+    }
+
+    public function testCreateNoopWorker()
+    {
+        $worker = $this->gearmanService->createNoopWorker('test_job');
+        $this->assertInstanceOf('Hautelook\GearmanBundle\Model\GearmanWorker', $worker);
+    }
 }
 
 class TestJob implements GearmanJobInterface
@@ -145,6 +174,13 @@ class TestJob implements GearmanJobInterface
     }
 
     public function setWorkload(array $workload)
+    {
+    }
+}
+
+class TestWorker
+{
+    public function work(\GearmanJob $job)
     {
     }
 }
