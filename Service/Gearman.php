@@ -102,13 +102,24 @@ class Gearman
      * @param string $fqClassName
      * @param string $callBackName
      *
+     * @throws \InvalidArgumentException if the callback is invalid
+     *
      * @return GearmanWorker
      */
     public function createWorker($jobName, $fqClassName, $callBackName)
     {
         $worker = new GearmanWorker($this->servers);
 
+        if (!class_exists($fqClassName)) {
+            throw new \InvalidArgumentException("Class {$fqClassName} does not exist");
+        }
+
         $workerObj = new $fqClassName();
+
+        if (!method_exists($workerObj, $callBackName)) {
+            throw new \InvalidArgumentException("Method {$callBackName} does not exist in {$fqClassName}");
+        }
+
         $worker->addCallbackFunction($jobName, array($workerObj, $callBackName));
 
         return $worker;
