@@ -35,14 +35,38 @@ class GearmanWorker
     }
 
     /**
-     * Have the worker work and return the return code.
+     * Have the worker work. If this function returns fails, call GearmanWorker::getError() and
+     * GearmanWorker::getErrorNumber() to get more detail about the failure.
      *
-     * @return int
+     * @return bool true always
+     * @throws \RuntimeException if the worker returned an error.
      */
     public function work()
     {
-        $this->worker->work();
+        if (!$this->worker->work()) {
+            throw new \RuntimeException();
+        }
 
-        return $this->worker->returnCode();
+        return true;
+    }
+
+    /**
+     * Returns a string describing the last error
+     *
+     * @return string
+     */
+    public function getError()
+    {
+        return $this->worker->error();
+    }
+
+    /**
+     * Returns an int representing the last error
+     *
+     * @return int
+     */
+    public function getErrorNumber()
+    {
+        return $this->worker->getErrno();
     }
 }
