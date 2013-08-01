@@ -4,6 +4,7 @@ GearmanBundle
 A bundle that provides an interface to submit Gearman jobs
 
 [![Build Status](https://travis-ci.org/hautelook/GearmanBundle.png?branch=master)](https://travis-ci.org/hautelook/GearmanBundle)
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/hautelook/GearmanBundle/badges/quality-score.png?s=65f1b0f6666f52666a6a038fe4b7c32190b1af39)](https://scrutinizer-ci.com/g/hautelook/GearmanBundle/)
 
 ## Introduction
 
