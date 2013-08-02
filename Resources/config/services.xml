@@ -21,6 +21,13 @@
         <service id="hautelook_gearman.service.telnet_client" class="%hautelook_gearman.gearman.telnet_client.class%">
             <argument>%servers%</argument>
         </service>
+
+        <service id="hautelook_gearman.monitor.gearman" class="Hautelook\GearmanBundle\Monitor\GearmanMonitor" public="false">
+            <tag name="liip_monitor.check" alias="gearman"/>
+            <argument type="service" id="hautelook_gearman.service.telnet_client" />
+            <argument>%monitor.thresholds%</argument>
+        </service>
+
     </services>
 
 </container>
