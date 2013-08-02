@@ -1,6 +1,7 @@
 <?php
 
 namespace Hautelook\GearmanBundle\Tests\Monitor;
+
 use Hautelook\GearmanBundle\Monitor\GearmanMonitor;
 use Liip\Monitor\Result\CheckResult;
 
