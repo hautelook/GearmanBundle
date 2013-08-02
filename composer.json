@@ -25,10 +25,12 @@
         "symfony/browser-kit": "~2.1",
         "symfony/form": "~2.1",
         "symfony/yaml": "~2.1",
-        "symfony/class-loader": "~2.1"
+        "symfony/class-loader": "~2.1",
+        "liip/monitor": "~1.0"
     },
     "suggest": {
-        "ext-gearman": "The PECL Gearman extension"
+        "ext-gearman": "The PECL Gearman extension",
+        "liip/monitor": "To enable the gearman monitor"
     },
     "autoload": {
         "psr-0": { "Hautelook\\GearmanBundle": "" }

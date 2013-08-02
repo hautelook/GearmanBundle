@@ -31,5 +31,6 @@ class HautelookGearmanExtension extends Extension
         }
 
         $container->setParameter('servers', $config['servers']);
+        $container->setParameter('monitor.thresholds', $config['monitor']);
     }
 }
