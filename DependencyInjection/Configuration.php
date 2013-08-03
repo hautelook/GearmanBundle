@@ -31,6 +31,15 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
             ->end()
+            ->arrayNode('monitor')
+                ->info('Defines the thresholds for the Gearman monitor')
+                ->prototype('array')
+                    ->children()
+                        ->scalarNode('queue_size')->end()
+                        ->scalarNode('workers')->end()
+                    ->end()
+                ->end()
+            ->end()
         ->end();
 
         return $treeBuilder;

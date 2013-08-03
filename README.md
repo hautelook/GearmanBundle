@@ -150,7 +150,7 @@ Define the service, and tag it as a listener:
 </service>
 ```
 
-### Gearman Monitor
+### Gearman Monitor Command
 
 The bundle provides a console command that you can run like this:
 
@@ -162,6 +162,21 @@ solr_update_item_inventory Jobs: 0 Workers: 0 / 0
 solr_update_item_popularity Jobs: 0 Workers: 0 / 0
 solr_update_item Jobs: 4261 Workers: 1 / 1
 ```
+
+#### Gearman Monitor
+
+The bundle provides a Liip compatible monitor. You can enable it by adding the following to the configuration:
+
+```yml
+# Hautelook Gearman Bundle
+hautelook_gearman:
+    monitor:
+        solr_update_item:
+            queue_size: 10,     # Maximum number of jobs in the queue
+            workers: 1          # Minimum number of workers
+```
+
+Queue size violations result in a `WARNING` status, whereas worker size violations result in a CRITICAL status.
 
 ## To Do & Future plans
 
