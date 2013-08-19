@@ -45,7 +45,7 @@ class GearmanClearCommand extends ContainerAwareCommand
         $progress->setFormat(ProgressHelper::FORMAT_VERBOSE_NOMAX);
         $progress->start($output);
 
-        while (\GEARMAN_SUCCESS == $worker->work()) {
+        while (true === $worker->work()) {
             $progress->advance();
         }
 
