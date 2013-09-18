@@ -146,13 +146,11 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateWorker()
     {
-        $testContainer = new TestContainer();
-
         $worker = $this->gearmanService->createWorker(
             'test_job',
             'Hautelook\\GearmanBundle\\Tests\\Service\\TestWorker',
             'work',
-            $testContainer
+            $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface')
         );
 
         $this->assertInstanceOf('Hautelook\GearmanBundle\Model\GearmanWorker', $worker);
@@ -185,53 +183,6 @@ class TestJob implements GearmanJobInterface
 class TestWorker
 {
     public function work(\GearmanJob $job)
-    {
-    }
-}
-
-class TestContainer implements ContainerInterface
-{
-    public function set($id, $service, $scope = self::SCOPE_CONTAINER)
-    {
-    }
-
-    public function get($id, $invalidBehavior = self::EXCEPTION_ON_INVALID_REFERENCE)
-    {
-    }
-
-    public function has($id)
-    {
-    }
-
-    public function getParameter($name)
-    {
-    }
-
-    public function hasParameter($name)
-    {
-    }
-
-    public function setParameter($name, $value)
-    {
-    }
-
-    public function enterScope($name)
-    {
-    }
-
-    public function leaveScope($name)
-    {
-    }
-
-    public function addScope(ScopeInterface $scope)
-    {
-    }
-
-    public function hasScope($name)
-    {
-    }
-
-    public function isScopeActive($name)
     {
     }
 }
