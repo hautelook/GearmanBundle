@@ -55,6 +55,8 @@ hautelook_gearman:
 
 ## Usage
 
+### Jobs
+
 To start submitting a job, first create a class that represents the job:
 
 ```php
@@ -149,6 +151,36 @@ Define the service, and tag it as a listener:
     <tag name="kernel.event_listener" event="gearman.bind.workload" method="onBindWorkload" />
 </service>
 ```
+
+### Gearman Workers
+
+You can use a command to run a single gearman worker. For example:
+
+```bash
+$ app/console hautelook:gearman:run job_name Fully\\Qualified\\NameSpace\\To\\Your\\WorkerClass functionToCall
+```
+
+This will then invoke the `functionToCall` on an instantiated `WorkerClass` after having picked up a job from the
+`job_name` queue. Your worker class should look like:
+
+```php
+<?php
+
+namespace Fully\\Qualified\\NameSpace\\To\\Your;
+
+class WorkerClass
+{
+    public function functionToCall(\GearmanJob $job)
+    {
+        // Do the work here
+    }
+}
+```
+
+#### Accessing the container from the worker
+
+If your worker needs access to the Symfony DI container, you can simply make your worker class implement
+`Symfony\Component\DependencyInjection\ContainerAwareInterface`, and the container will be set for you.
 
 ### Gearman Monitor Command
 

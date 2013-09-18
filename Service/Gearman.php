@@ -4,6 +4,8 @@ namespace Hautelook\GearmanBundle\Service;
 
 use Hautelook\GearmanBundle\Model\GearmanWorker;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
 use Hautelook\GearmanBundle\Event\BindWorkloadDataEvent;
 use Hautelook\GearmanBundle\Event\GearmanEvents;
@@ -101,12 +103,13 @@ class Gearman
      * @param string $jobName
      * @param string $fqClassName
      * @param string $callBackName
+     * @param ContainerInterface $container
      *
      * @throws \InvalidArgumentException if the callback is invalid
      *
      * @return GearmanWorker
      */
-    public function createWorker($jobName, $fqClassName, $callBackName)
+    public function createWorker($jobName, $fqClassName, $callBackName, ContainerInterface $container = null)
     {
         $worker = new GearmanWorker($this->servers);
 
@@ -118,6 +121,13 @@ class Gearman
 
         if (!method_exists($workerObj, $callBackName)) {
             throw new \InvalidArgumentException("Method {$callBackName} does not exist in {$fqClassName}");
+        }
+
+        $workerReflObj = new \ReflectionObject($workerObj);
+
+        if ($workerReflObj->implementsInterface('\Symfony\Component\DependencyInjection\ContainerAwareInterface')) {
+            /** @var $workerObj ContainerAwareInterface */
+            $workerObj->setContainer($container);
         }
 
         $worker->addCallbackFunction($jobName, array($workerObj, $callBackName));
