@@ -46,9 +46,10 @@ class GearmanRunCommand extends ContainerAwareCommand
         $fqWorkerClass = $input->getArgument('fq_worker_class');
         $method = $input->getArgument('method');
 
+        /** @var $gearman \Hautelook\GearmanBundle\Service\Gearman */
         $gearman = $this->getContainer()->get('hautelook_gearman.service.gearman');
         /** @var $worker \Hautelook\GearmanBundle\Model\GearmanWorker */
-        $worker = $gearman->createWorker($jobName, $fqWorkerClass, $method);
+        $worker = $gearman->createWorker($jobName, $fqWorkerClass, $method, $this->getContainer());
 
         $output->writeln("<info>Gearman worker created for $jobName</info>");
 

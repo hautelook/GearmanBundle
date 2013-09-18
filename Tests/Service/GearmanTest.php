@@ -8,6 +8,8 @@ use Hautelook\GearmanBundle\Model\GearmanJobInterface;
 use Hautelook\GearmanBundle\Service\Gearman as GearmanService;
 use Hautelook\GearmanBundle\Event\GearmanEvents;
 use Hautelook\GearmanBundle\Event\BindWorkloadDataEvent;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ScopeInterface;
 
 /**
  * @author Baldur Rensch <baldur.rensch@hautelook.com>
@@ -144,11 +146,11 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateWorker()
     {
-
         $worker = $this->gearmanService->createWorker(
             'test_job',
             'Hautelook\\GearmanBundle\\Tests\\Service\\TestWorker',
-            'work'
+            'work',
+            $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface')
         );
 
         $this->assertInstanceOf('Hautelook\GearmanBundle\Model\GearmanWorker', $worker);
