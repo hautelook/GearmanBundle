@@ -8,6 +8,8 @@ use Hautelook\GearmanBundle\Model\GearmanJobInterface;
 use Hautelook\GearmanBundle\Service\Gearman as GearmanService;
 use Hautelook\GearmanBundle\Event\GearmanEvents;
 use Hautelook\GearmanBundle\Event\BindWorkloadDataEvent;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @author Baldur Rensch <baldur.rensch@hautelook.com>
@@ -89,7 +91,7 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testInvalidPriorityBackground()
     {
@@ -99,7 +101,7 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testInvalidPriority()
     {
@@ -144,7 +146,6 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateWorker()
     {
-
         $worker = $this->gearmanService->createWorker(
             'test_job',
             'Hautelook\\GearmanBundle\\Tests\\Service\\TestWorker',
@@ -158,6 +159,24 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
     {
         $worker = $this->gearmanService->createNoopWorker('test_job');
         $this->assertInstanceOf('Hautelook\GearmanBundle\Model\GearmanWorker', $worker);
+    }
+
+    /**
+     * expectedException \Hautelook\GearmanBundle\Tests\Service\ContainerSetException
+     */
+    public function testCreateContainerAwareWorker()
+    {
+        $testContainer = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
+
+        $worker = $this->gearmanService->createWorker(
+            'test_job',
+            'Hautelook\\GearmanBundle\\Tests\\Service\\ContainerAwareTestWorker',
+            'work',
+            $testContainer
+        );
+
+        $this->assertInstanceOf('Hautelook\GearmanBundle\Model\GearmanWorker', $worker);
+        $this->assertSame($testContainer, ContainerAwareTestWorker::$container);
     }
 }
 
@@ -182,5 +201,18 @@ class TestWorker
 {
     public function work(\GearmanJob $job)
     {
+    }
+}
+
+class ContainerAwareTestWorker extends TestWorker implements ContainerAwareInterface
+{
+    public static $container;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        self::$container = $container;
     }
 }
