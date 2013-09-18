@@ -109,7 +109,7 @@ class Gearman
      *
      * @return GearmanWorker
      */
-    public function createWorker($jobName, $fqClassName, $callBackName, ContainerInterface $container)
+    public function createWorker($jobName, $fqClassName, $callBackName, ContainerInterface $container = null)
     {
         $worker = new GearmanWorker($this->servers);
 
