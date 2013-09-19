@@ -26,7 +26,7 @@ class GearmanRunCommand extends ContainerAwareCommand
             ->addArgument(
                 'fq_worker_class',
                 InputArgument::REQUIRED,
-                'The Fully qualified domain name of the worker class'
+                'The Fully qualified name space of the worker class'
             )
             ->addArgument(
                 'method',

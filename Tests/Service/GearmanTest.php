@@ -8,8 +8,8 @@ use Hautelook\GearmanBundle\Model\GearmanJobInterface;
 use Hautelook\GearmanBundle\Service\Gearman as GearmanService;
 use Hautelook\GearmanBundle\Event\GearmanEvents;
 use Hautelook\GearmanBundle\Event\BindWorkloadDataEvent;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ScopeInterface;
 
 /**
  * @author Baldur Rensch <baldur.rensch@hautelook.com>
@@ -91,7 +91,7 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testInvalidPriorityBackground()
     {
@@ -101,7 +101,7 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testInvalidPriority()
     {
@@ -146,13 +146,10 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateWorker()
     {
-        $testContainer = new TestContainer();
-
         $worker = $this->gearmanService->createWorker(
             'test_job',
             'Hautelook\\GearmanBundle\\Tests\\Service\\TestWorker',
-            'work',
-            $testContainer
+            'work'
         );
 
         $this->assertInstanceOf('Hautelook\GearmanBundle\Model\GearmanWorker', $worker);
@@ -162,6 +159,24 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
     {
         $worker = $this->gearmanService->createNoopWorker('test_job');
         $this->assertInstanceOf('Hautelook\GearmanBundle\Model\GearmanWorker', $worker);
+    }
+
+    /**
+     * expectedException \Hautelook\GearmanBundle\Tests\Service\ContainerSetException
+     */
+    public function testCreateContainerAwareWorker()
+    {
+        $testContainer = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
+
+        $worker = $this->gearmanService->createWorker(
+            'test_job',
+            'Hautelook\\GearmanBundle\\Tests\\Service\\ContainerAwareTestWorker',
+            'work',
+            $testContainer
+        );
+
+        $this->assertInstanceOf('Hautelook\GearmanBundle\Model\GearmanWorker', $worker);
+        $this->assertSame($testContainer, ContainerAwareTestWorker::$container);
     }
 }
 
@@ -189,49 +204,15 @@ class TestWorker
     }
 }
 
-class TestContainer implements ContainerInterface
+class ContainerAwareTestWorker extends TestWorker implements ContainerAwareInterface
 {
-    public function set($id, $service, $scope = self::SCOPE_CONTAINER)
-    {
-    }
+    public static $container;
 
-    public function get($id, $invalidBehavior = self::EXCEPTION_ON_INVALID_REFERENCE)
+    /**
+     * {@inheritDoc}
+     */
+    public function setContainer(ContainerInterface $container = null)
     {
-    }
-
-    public function has($id)
-    {
-    }
-
-    public function getParameter($name)
-    {
-    }
-
-    public function hasParameter($name)
-    {
-    }
-
-    public function setParameter($name, $value)
-    {
-    }
-
-    public function enterScope($name)
-    {
-    }
-
-    public function leaveScope($name)
-    {
-    }
-
-    public function addScope(ScopeInterface $scope)
-    {
-    }
-
-    public function hasScope($name)
-    {
-    }
-
-    public function isScopeActive($name)
-    {
+        self::$container = $container;
     }
 }

@@ -109,7 +109,7 @@ class Gearman
      *
      * @return GearmanWorker
      */
-    public function createWorker($jobName, $fqClassName, $callBackName, ContainerInterface $container)
+    public function createWorker($jobName, $fqClassName, $callBackName, ContainerInterface $container = null)
     {
         $worker = new GearmanWorker($this->servers);
 
@@ -153,15 +153,5 @@ class Gearman
         $worker->addCallbackFunction($jobName, $noop);
 
         return $worker;
-    }
-
-    /**
-     * Returns the original GearmanClient to expose all available functionality.
-     *
-     * @return \GearmanClient
-     */
-    public function getGearmanClient()
-    {
-        return $this->gearmanClient;
     }
 }
