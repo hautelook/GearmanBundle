@@ -175,6 +175,12 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Hautelook\GearmanBundle\Model\GearmanWorker', $worker);
         $this->assertSame($testContainer, ContainerAwareTestWorker::$container);
     }
+
+    public function testGetGearmanClient()
+    {
+        $actualClient = $this->gearmanService->getGearmanClient();
+        $this->assertSame($this->gearmanClient, $actualClient);
+    }
 }
 
 class TestJob implements GearmanJobInterface
