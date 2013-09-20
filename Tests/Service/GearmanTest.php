@@ -161,9 +161,6 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Hautelook\GearmanBundle\Model\GearmanWorker', $worker);
     }
 
-    /**
-     * expectedException \Hautelook\GearmanBundle\Tests\Service\ContainerSetException
-     */
     public function testCreateContainerAwareWorker()
     {
         $testContainer = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
