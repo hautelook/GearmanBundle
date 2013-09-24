@@ -118,6 +118,8 @@ class GearmanMonitor extends Check
     public function checkForServer($server, $statusInformation, &$status, &$message)
     {
         $serverStatus = array();
+        $messages = array();
+
         foreach ($statusInformation as $job) {
             $serverStatus[$job['name']] = $job;
         }
@@ -126,7 +128,7 @@ class GearmanMonitor extends Check
             if (empty($serverStatus[$job])) {
                 // There are configured thresholds for this job, but the job was not present
                 $status = CheckResult::CRITICAL;
-                $message .= $this->generateMissingQueueWarning($server, $job);
+                $messages[] = $this->generateMissingQueueWarning($server, $job);
             } else {
                 $threshold = $this->thresholds[$job];
                 $queueInfo = $serverStatus[$job];
@@ -135,13 +137,25 @@ class GearmanMonitor extends Check
                     if ($status != CheckResult::CRITICAL) {
                         $status = CheckResult::WARNING;
                     }
-                    $message .= $this->generateQueueSizeWarning($server, $queueInfo['name'], $threshold['queue_size'], $queueInfo['queue']);
+                    $messages[] = $this->generateQueueSizeWarning(
+                        $server,
+                        $queueInfo['name'],
+                        $threshold['queue_size'],
+                        $queueInfo['queue']
+                    );
                 }
                 if (isset($threshold['workers']) && $threshold['workers'] > $queueInfo['workers']) {
                     $status = CheckResult::CRITICAL;
-                    $message .= $this->generateWorkerWarning($server, $queueInfo['name'], $threshold['workers'], $queueInfo['workers']);
+                    $messages[] = $this->generateWorkerWarning(
+                        $server,
+                        $queueInfo['name'],
+                        $threshold['workers'],
+                        $queueInfo['workers']
+                    );
                 }
             }
         }
+
+        $message = implode(' ', $messages);
     }
 }
