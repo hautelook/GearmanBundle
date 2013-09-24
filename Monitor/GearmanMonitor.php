@@ -69,8 +69,8 @@ class GearmanMonitor extends Check
     /**
      * @param string $server
      * @param string $queueName
-     * @param int $threshold
-     * @param int $queueCount
+     * @param int    $threshold
+     * @param int    $queueCount
      *
      * @return string
      */
@@ -84,8 +84,8 @@ class GearmanMonitor extends Check
     /**
      * @param string $server
      * @param string $queueName
-     * @param int $threshold
-     * @param int $workers
+     * @param int    $threshold
+     * @param int    $workers
      *
      * @return string
      */
@@ -98,28 +98,64 @@ class GearmanMonitor extends Check
 
     /**
      * @param string $server
-     * @param array $statusInformation
-     * @param int $status
+     * @param string $queueName
+     *
+     * @return string
+     */
+    private function generateMissingQueueWarning($server, $queueName)
+    {
+        $message = "{$server}: {$queueName}: queue is not present.";
+
+        return $message;
+    }
+
+    /**
+     * @param string $server
+     * @param array  $statusInformation
+     * @param int    $status
      * @param string $message
      */
     public function checkForServer($server, $statusInformation, &$status, &$message)
     {
-        foreach ($statusInformation as $queueInfo) {
-            if (!empty($this->thresholds[$queueInfo['name']])) {
+        $serverStatus = array();
+        $messages = array();
 
-                $threshold = $this->thresholds[$queueInfo['name']];
+        foreach ($statusInformation as $job) {
+            $serverStatus[$job['name']] = $job;
+        }
+
+        foreach ($this->thresholds as $job => $threshold) {
+            if (empty($serverStatus[$job])) {
+                // There are configured thresholds for this job, but the job was not present
+                $status = CheckResult::CRITICAL;
+                $messages[] = $this->generateMissingQueueWarning($server, $job);
+            } else {
+                $threshold = $this->thresholds[$job];
+                $queueInfo = $serverStatus[$job];
 
                 if (isset($threshold['queue_size']) && $threshold['queue_size'] < $queueInfo['queue']) {
                     if ($status != CheckResult::CRITICAL) {
                         $status = CheckResult::WARNING;
                     }
-                    $message .= $this->generateQueueSizeWarning($server, $queueInfo['name'], $threshold['queue_size'], $queueInfo['queue']);
+                    $messages[] = $this->generateQueueSizeWarning(
+                        $server,
+                        $queueInfo['name'],
+                        $threshold['queue_size'],
+                        $queueInfo['queue']
+                    );
                 }
                 if (isset($threshold['workers']) && $threshold['workers'] > $queueInfo['workers']) {
                     $status = CheckResult::CRITICAL;
-                    $message .= $this->generateWorkerWarning($server, $queueInfo['name'], $threshold['workers'], $queueInfo['workers']);
+                    $messages[] = $this->generateWorkerWarning(
+                        $server,
+                        $queueInfo['name'],
+                        $threshold['workers'],
+                        $queueInfo['workers']
+                    );
                 }
             }
         }
+
+        $message = implode(' ', $messages);
     }
 }
