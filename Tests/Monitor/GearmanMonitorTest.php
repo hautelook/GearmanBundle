@@ -99,7 +99,10 @@ class GearmanMonitorTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Liip\Monitor\Result\CheckResult', $result);
         $this->assertEquals(CheckResult::WARNING, $result->getStatus());
-        $this->assertEquals("server_1: queue_1: queue size should be less then 10, but count is 11", $result->getMessage());
+        $this->assertEquals(
+            "server_1: queue_1: queue size should be less then 10, but count is 11",
+            $result->getMessage()
+        );
         $this->assertEquals('Gearman Queue', $result->getCheckName());
     }
 
@@ -155,7 +158,10 @@ class GearmanMonitorTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Liip\Monitor\Result\CheckResult', $result);
         $this->assertEquals(CheckResult::CRITICAL, $result->getStatus());
-        $this->assertEquals("server_1: queue_1: queue should have at least 2, but only 1 available", $result->getMessage());
+        $this->assertEquals(
+            "server_1: queue_1: queue should have at least 2, but only 1 available",
+            $result->getMessage()
+        );
         $this->assertEquals('Gearman Queue', $result->getCheckName());
     }
 
@@ -213,7 +219,40 @@ class GearmanMonitorTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Liip\Monitor\Result\CheckResult', $result);
         $this->assertEquals(CheckResult::CRITICAL, $result->getStatus());
-        $this->assertEquals("server_1: queue_1: queue size should be less then 9, but count is 10server_1: queue_1: queue should have at least 2, but only 1 available", $result->getMessage());
+        $this->assertEquals(
+            "server_1: queue_1: queue size should be less then 9, but count is 10 server_1: " .
+            "queue_1: queue should have at least 2, but only 1 available",
+            $result->getMessage()
+        );
+        $this->assertEquals('Gearman Queue', $result->getCheckName());
+    }
+
+    public function testQueueNonExistant()
+    {
+        $monitor = $this->getMonitor(
+            array(
+                'server_1' => array(
+                    array(
+                        'name' => 'queue_2',
+                        'queue' => 10,
+                        'running' => 0,
+                        'workers' => 1,
+                    ),
+                )
+            ),
+            array(
+                'queue_1' => array(
+                    'queue_size' => 9,
+                    'workers' => 2
+                )
+            )
+        );
+
+        $result = $monitor->check();
+
+        $this->assertInstanceOf('Liip\Monitor\Result\CheckResult', $result);
+        $this->assertEquals(CheckResult::CRITICAL, $result->getStatus());
+        $this->assertEquals("server_1: queue_1: queue is not present.", $result->getMessage());
         $this->assertEquals('Gearman Queue', $result->getCheckName());
     }
 
