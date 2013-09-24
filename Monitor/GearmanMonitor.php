@@ -69,8 +69,8 @@ class GearmanMonitor extends Check
     /**
      * @param string $server
      * @param string $queueName
-     * @param int $threshold
-     * @param int $queueCount
+     * @param int    $threshold
+     * @param int    $queueCount
      *
      * @return string
      */
@@ -84,8 +84,8 @@ class GearmanMonitor extends Check
     /**
      * @param string $server
      * @param string $queueName
-     * @param int $threshold
-     * @param int $workers
+     * @param int    $threshold
+     * @param int    $workers
      *
      * @return string
      */
@@ -98,16 +98,38 @@ class GearmanMonitor extends Check
 
     /**
      * @param string $server
-     * @param array $statusInformation
-     * @param int $status
+     * @param string $queueName
+     *
+     * @return string
+     */
+    private function generateMissingQueueWarning($server, $queueName)
+    {
+        $message = "{$server}: {$queueName}: queue is not present.";
+
+        return $message;
+    }
+
+    /**
+     * @param string $server
+     * @param array  $statusInformation
+     * @param int    $status
      * @param string $message
      */
     public function checkForServer($server, $statusInformation, &$status, &$message)
     {
-        foreach ($statusInformation as $queueInfo) {
-            if (!empty($this->thresholds[$queueInfo['name']])) {
+        $serverStatus = array();
+        foreach ($statusInformation as $job) {
+            $serverStatus[$job['name']] = $job;
+        }
 
-                $threshold = $this->thresholds[$queueInfo['name']];
+        foreach ($this->thresholds as $job => $threshold) {
+            if (empty($serverStatus[$job])) {
+                // There are configured thresholds for this job, but the job was not present
+                $status = CheckResult::CRITICAL;
+                $message .= $this->generateMissingQueueWarning($server, $job);
+            } else {
+                $threshold = $this->thresholds[$job];
+                $queueInfo = $serverStatus[$job];
 
                 if (isset($threshold['queue_size']) && $threshold['queue_size'] < $queueInfo['queue']) {
                     if ($status != CheckResult::CRITICAL) {
