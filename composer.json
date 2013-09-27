@@ -19,7 +19,7 @@
         "symfony/framework-bundle": "~2.1",
         "symfony/event-dispatcher": "~2.1",
         "symfony/console": "~2.1",
-        "necromant2005/gearman-stats": "1.0.*"
+        "necromant2005/gearman-stats": "1.1"
     },
     "require-dev": {
         "symfony/browser-kit": "~2.1",
