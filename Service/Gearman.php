@@ -100,7 +100,7 @@ class Gearman
      * Creates a worker with the given job name. The worker will call the $callBackName function
      * on a $fqClassName object.
      *
-     * @param string $jobName
+     * @param string|array $jobNames
      * @param string $fqClassName
      * @param string $callBackName
      * @param ContainerInterface $container
@@ -109,7 +109,7 @@ class Gearman
      *
      * @return GearmanWorker
      */
-    public function createWorker($jobName, $fqClassName, $callBackName, ContainerInterface $container = null)
+    public function createWorker($jobNames, $fqClassName, $callBackName, ContainerInterface $container = null)
     {
         $worker = new GearmanWorker($this->servers);
 
@@ -130,7 +130,13 @@ class Gearman
             $workerObj->setContainer($container);
         }
 
-        $worker->addCallbackFunction($jobName, array($workerObj, $callBackName));
+        if (! is_array($jobNames)) {
+            $jobNames = array($jobNames);
+        }
+
+        foreach ($jobNames as $jobName) {
+            $worker->addCallbackFunction($jobName, array($workerObj, $callBackName));
+        }
 
         return $worker;
     }
