@@ -155,6 +155,17 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Hautelook\GearmanBundle\Model\GearmanWorker', $worker);
     }
 
+    public function testCreateMultiWorker()
+    {
+        $worker = $this->gearmanService->createWorker(
+            array('test_job_1', 'test_job_2', 'test_job_3'),
+            'Hautelook\\GearmanBundle\\Tests\\Service\\TestWorker',
+            'work'
+        );
+
+        $this->assertInstanceOf('Hautelook\GearmanBundle\Model\GearmanWorker', $worker);
+    }
+
     public function testCreateNoopWorker()
     {
         $worker = $this->gearmanService->createNoopWorker('test_job');
