@@ -19,11 +19,6 @@ class GearmanRunCommand extends ContainerAwareCommand
             ->setName('hautelook:gearman:run')
             ->setDescription('Run a gearman worker')
             ->addArgument(
-                'job_name',
-                InputArgument::REQUIRED,
-                'The name of the gearman job'
-            )
-            ->addArgument(
                 'fq_worker_class',
                 InputArgument::REQUIRED,
                 'The Fully qualified name space of the worker class'
@@ -32,6 +27,11 @@ class GearmanRunCommand extends ContainerAwareCommand
                 'method',
                 InputArgument::REQUIRED,
                 'The method name of the worker function'
+            )
+            ->addArgument(
+                'job_names',
+                InputArgument::IS_ARRAY | InputArgument::REQUIRED,
+                'The name of one or multiple gearman jobs'
             );
     }
 
@@ -42,16 +42,17 @@ class GearmanRunCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $jobName = $input->getArgument('job_name');
         $fqWorkerClass = $input->getArgument('fq_worker_class');
         $method = $input->getArgument('method');
+        $jobNames = $input->getArgument('job_names');
 
         /** @var $gearman \Hautelook\GearmanBundle\Service\Gearman */
         $gearman = $this->getContainer()->get('hautelook_gearman.service.gearman');
         /** @var $worker \Hautelook\GearmanBundle\Model\GearmanWorker */
-        $worker = $gearman->createWorker($jobName, $fqWorkerClass, $method, $this->getContainer());
+        $worker = $gearman->createWorker($jobNames, $fqWorkerClass, $method, $this->getContainer());
 
-        $output->writeln("<info>Gearman worker created for $jobName</info>");
+        $jobNamesString = implode(', ', $jobNames);
+        $output->writeln("<info>Gearman worker created for: {$jobNamesString}</info>");
 
         try {
             while ($worker->work()) {
