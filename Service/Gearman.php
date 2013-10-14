@@ -97,19 +97,19 @@ class Gearman
     }
 
     /**
-     * Creates a worker with the given job name. The worker will call the $callBackName function
+     * Creates a worker with the given job name(s). The worker will call the $callBackName function
      * on a $fqClassName object.
      *
-     * @param string|array $jobNames
-     * @param string $fqClassName
-     * @param string $callBackName
+     * @param array              $jobNames
+     * @param string             $fqClassName
+     * @param string             $callBackName
      * @param ContainerInterface $container
      *
      * @throws \InvalidArgumentException if the callback is invalid
      *
      * @return GearmanWorker
      */
-    public function createWorker($jobNames, $fqClassName, $callBackName, ContainerInterface $container = null)
+    public function createWorker(array $jobNames, $fqClassName, $callBackName, ContainerInterface $container = null)
     {
         $worker = new GearmanWorker($this->servers);
 
@@ -128,10 +128,6 @@ class Gearman
         if ($workerReflObj->implementsInterface('\Symfony\Component\DependencyInjection\ContainerAwareInterface')) {
             /** @var $workerObj ContainerAwareInterface */
             $workerObj->setContainer($container);
-        }
-
-        if (! is_array($jobNames)) {
-            $jobNames = array($jobNames);
         }
 
         foreach ($jobNames as $jobName) {

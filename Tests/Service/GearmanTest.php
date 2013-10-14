@@ -147,7 +147,7 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
     public function testCreateWorker()
     {
         $worker = $this->gearmanService->createWorker(
-            'test_job',
+            array('test_job'),
             'Hautelook\\GearmanBundle\\Tests\\Service\\TestWorker',
             'work'
         );
@@ -166,6 +166,21 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Hautelook\GearmanBundle\Model\GearmanWorker', $worker);
     }
 
+    /**
+     * @expectedException \PHPUnit_Framework_Error
+     * @expectedExceptionMessage Argument 1 passed
+     */
+    public function testCreateWorkerInvalidArgument()
+    {
+        $worker = $this->gearmanService->createWorker(
+            'test_job',
+            'Hautelook\\GearmanBundle\\Tests\\Service\\TestWorker',
+            'work'
+        );
+
+        $this->assertInstanceOf('Hautelook\GearmanBundle\Model\GearmanWorker', $worker);
+    }
+
     public function testCreateNoopWorker()
     {
         $worker = $this->gearmanService->createNoopWorker('test_job');
@@ -177,7 +192,7 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
         $testContainer = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
 
         $worker = $this->gearmanService->createWorker(
-            'test_job',
+            array('test_job'),
             'Hautelook\\GearmanBundle\\Tests\\Service\\ContainerAwareTestWorker',
             'work',
             $testContainer
