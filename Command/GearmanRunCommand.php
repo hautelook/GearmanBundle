@@ -8,15 +8,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class GearmanRunMultiCommand
- *
- * Other than then GearmanRunCommand class, this console command takes multiple
- * job_names as last (not first) argument.
- *
+ * Class GearmanRunCommand
  * @author Baldur Rensch <baldur.rensch@hautelook.com>
- * @author Anton Stöckl <anton@stoeckl.de>
  */
-class GearmanRunMultiCommand extends ContainerAwareCommand
+class GearmanRunCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
