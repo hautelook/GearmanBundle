@@ -157,11 +157,12 @@ Define the service, and tag it as a listener:
 You can use a command to run a single gearman worker. For example:
 
 ```bash
-$ app/console hautelook:gearman:run job_name Fully\\Qualified\\NameSpace\\To\\Your\\WorkerClass functionToCall
+$ app/console hautelook:gearman:run Fully\\Qualified\\NameSpace\\ToYour\\WorkerClass
+\             functionToCall jobName[, alternativeJobName,...]
 ```
 
 This will then invoke the `functionToCall` on an instantiated `WorkerClass` after having picked up a job from the
-`job_name` queue. Your worker class should look like:
+`job_name`, `alternativeJobName` queues. Your worker class should look like:
 
 ```php
 <?php
