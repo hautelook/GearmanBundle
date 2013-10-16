@@ -31,4 +31,9 @@ interface GearmanJobInterface
      * @return string
      */
     public function getFunctionName();
+
+    /**
+     * @return null|string
+     */
+    public function getUnique();
 }

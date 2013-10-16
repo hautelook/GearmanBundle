@@ -69,25 +69,25 @@ class Gearman
 
         if ($background) {
             if (GearmanJobInterface::PRIORITY_LOW == $priority) {
-                $jobHandle = $this->gearmanClient->doLowBackground($functionToCall, $workload);
+                $jobHandle = $this->gearmanClient->doLowBackground($functionToCall, $workload, $job->getUnique());
             } elseif (GearmanJobInterface::PRIORITY_NORMAL == $priority) {
-                $jobHandle = $this->gearmanClient->doBackground($functionToCall, $workload);
+                $jobHandle = $this->gearmanClient->doBackground($functionToCall, $workload, $job->getUnique());
             } elseif (GearmanJobInterface::PRIORITY_HIGH == $priority) {
-                $jobHandle = $this->gearmanClient->doHighBackground($functionToCall, $workload);
+                $jobHandle = $this->gearmanClient->doHighBackground($functionToCall, $workload, $job->getUnique());
             } else {
                 throw new \InvalidArgumentException("Priority not valid: {$priority}");
             }
         } else {
             if (GearmanJobInterface::PRIORITY_LOW == $priority) {
-                $jobHandle = $this->gearmanClient->doLow($functionToCall, $workload);
+                $jobHandle = $this->gearmanClient->doLow($functionToCall, $workload, $job->getUnique());
             } elseif (GearmanJobInterface::PRIORITY_NORMAL == $priority) {
                 if (method_exists($this->gearmanClient, 'doNormal')) {
-                    $jobHandle = $this->gearmanClient->doNormal($functionToCall, $workload);
+                    $jobHandle = $this->gearmanClient->doNormal($functionToCall, $workload, $job->getUnique());
                 } else {
-                    $jobHandle = $this->gearmanClient->do($functionToCall, $workload);
+                    $jobHandle = $this->gearmanClient->do($functionToCall, $workload, $job->getUnique());
                 }
             } elseif (GearmanJobInterface::PRIORITY_HIGH == $priority) {
-                $jobHandle = $this->gearmanClient->doHigh($functionToCall, $workload);
+                $jobHandle = $this->gearmanClient->doHigh($functionToCall, $workload, $job->getUnique());
             } else {
                 throw new \InvalidArgumentException("Priority not valid: {$priority}");
             }
