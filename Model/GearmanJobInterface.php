@@ -33,6 +33,9 @@ interface GearmanJobInterface
     public function getFunctionName();
 
     /**
+     * This function returns a unique task-ID for this job. If null is returned, an ID will be generated.
+     *
+     * @see http://us3.php.net/manual/en/gearmanjob.unique.php?
      * @return null|string
      */
     public function getUnique();
