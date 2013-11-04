@@ -83,7 +83,22 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
         $job = new TestJob();
 
         $this->gearmanClient->expects($this->once())->method($functionToCall)
-            ->with('testfunction', serialize('workload'))
+            ->with('testfunction', serialize('workload'), null)
+            ->will($this->returnValue('jobHandle'));
+
+        $jobStatus = $this->gearmanService->addJob($job, $background, $priority);
+        $this->assertTrue($jobStatus->isSuccessful());
+    }
+
+    /**
+     * @dataProvider gearmanFunctionsToCall
+     */
+    public function testCorrectGearmanFunctionCalledWithUnique($functionToCall, $background, $priority)
+    {
+        $job = new TestJobWithUnique();
+
+        $this->gearmanClient->expects($this->once())->method($functionToCall)
+            ->with('testfunction', serialize('workload'), 'unique')
             ->will($this->returnValue('jobHandle'));
 
         $jobStatus = $this->gearmanService->addJob($job, $background, $priority);
@@ -223,6 +238,19 @@ class TestJob implements GearmanJobInterface
 
     public function setWorkload(array $workload)
     {
+    }
+
+    public function getUnique()
+    {
+        return null;
+    }
+}
+
+class TestJobWithUnique extends TestJob
+{
+    public function getUnique()
+    {
+        return 'unique';
     }
 }
 
