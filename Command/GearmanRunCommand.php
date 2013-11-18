@@ -74,7 +74,7 @@ class GearmanRunCommand extends ContainerAwareCommand
                 $jobsDone++;
             }
 
-            $output->writeln("<info>Gearman worker finished after {$jobNamesString} jobs</info>");
+            $output->writeln("<info>Gearman worker finished after {$count} jobs</info>");
         } catch (\RuntimeException $e) {
             $output->writeln("<error>Error running job: {$worker->getErrorNumber()}: {$worker->getError()}</error>");
         }
