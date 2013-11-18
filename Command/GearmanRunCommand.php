@@ -53,9 +53,9 @@ class GearmanRunCommand extends ContainerAwareCommand
         $method = $input->getArgument('method');
         $jobNames = $input->getArgument('job_names');
 
-        $count = $input->getOption('count');
+        $count = (int) $input->getOption('count');
 
-        if (! is_int($count) || $count < 1) {
+        if ($count < 1) {
             $count = false;
         }
 
