@@ -16,6 +16,8 @@
             <argument>%servers%</argument>
         </service>
 
+        <service id="gearman" alias="hautelook_gearman.service.gearman" />
+
         <service id="hautelook_gearman.service.gearman_client" class="GearmanClient" public="false"/>
 
         <service id="hautelook_gearman.service.telnet_client" class="%hautelook_gearman.gearman.telnet_client.class%">

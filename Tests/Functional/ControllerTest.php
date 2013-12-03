@@ -13,4 +13,11 @@ class ControllerTest extends TestCase
         $gearmanService = $client->getContainer()->get('hautelook_gearman.service.gearman');
         $this->assertInstanceOf('Hautelook\GearmanBundle\Service\Gearman', $gearmanService);
     }
+
+    public function testServiceAlias()
+    {
+        $client = $this->createClient();
+        $gearmanService = $client->getContainer()->get('gearman');
+        $this->assertInstanceOf('Hautelook\GearmanBundle\Service\Gearman', $gearmanService);
+    }
 }
