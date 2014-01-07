@@ -215,4 +215,3 @@ Queue size violations result in a `WARNING` status, whereas worker size violatio
 
 - Ability to define the priority and background/foreground via the job
 - Add Gearman Exceptions back in
-- Add service alias "gearman"
