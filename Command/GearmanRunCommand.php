@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Class GearmanRunCommand
@@ -32,6 +33,12 @@ class GearmanRunCommand extends ContainerAwareCommand
                 'job_names',
                 InputArgument::IS_ARRAY | InputArgument::REQUIRED,
                 'The name of one or multiple gearman jobs'
+            )
+            ->addOption(
+                'count',
+                'c',
+                InputOption::VALUE_REQUIRED,
+                'The count of jobs after which the worker should exit'
             );
     }
 
@@ -46,6 +53,12 @@ class GearmanRunCommand extends ContainerAwareCommand
         $method = $input->getArgument('method');
         $jobNames = $input->getArgument('job_names');
 
+        $count = (int) $input->getOption('count');
+
+        if ($count < 1) {
+            $count = false;
+        }
+
         /** @var $gearman \Hautelook\GearmanBundle\Service\Gearman */
         $gearman = $this->getContainer()->get('hautelook_gearman.service.gearman');
         /** @var $worker \Hautelook\GearmanBundle\Model\GearmanWorker */
@@ -54,10 +67,14 @@ class GearmanRunCommand extends ContainerAwareCommand
         $jobNamesString = implode(', ', $jobNames);
         $output->writeln("<info>Gearman worker created for: {$jobNamesString}</info>");
 
+        $jobsDone = 0;
+
         try {
-            while ($worker->work()) {
-                // Nothing to do
+            while (($count === false || $jobsDone < $count) && $worker->work()) {
+                $jobsDone++;
             }
+
+            $output->writeln("<info>Gearman worker finished after {$count} jobs</info>");
         } catch (\RuntimeException $e) {
             $output->writeln("<error>Error running job: {$worker->getErrorNumber()}: {$worker->getError()}</error>");
         }
