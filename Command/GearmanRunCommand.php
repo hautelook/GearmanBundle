@@ -35,10 +35,10 @@ class GearmanRunCommand extends ContainerAwareCommand
                 'The name of one or multiple gearman jobs'
             )
             ->addOption(
-                'count',
-                'c',
+                'max-jobs',
+                'm',
                 InputOption::VALUE_REQUIRED,
-                'The count of jobs after which the worker should exit'
+                'The maximum number of jobs to be run by a worker after which the worker should exit'
             );
     }
 
@@ -53,10 +53,10 @@ class GearmanRunCommand extends ContainerAwareCommand
         $method = $input->getArgument('method');
         $jobNames = $input->getArgument('job_names');
 
-        $count = (int) $input->getOption('count');
+        $maxJobs = (int) $input->getOption('max-jobs');
 
-        if ($count < 1) {
-            $count = false;
+        if ($maxJobs < 1) {
+            $maxJobs = false;
         }
 
         /** @var $gearman \Hautelook\GearmanBundle\Service\Gearman */
@@ -70,11 +70,13 @@ class GearmanRunCommand extends ContainerAwareCommand
         $jobsDone = 0;
 
         try {
-            while (($count === false || $jobsDone < $count) && $worker->work()) {
+            while (($maxJobs === false || $jobsDone < $maxJobs) && $worker->work()) {
                 $jobsDone++;
             }
 
-            $output->writeln("<info>Gearman worker finished after {$count} jobs</info>");
+            if ($maxJobs) {
+                $output->writeln("<info>Gearman worker finished after {$maxJobs} jobs</info>");
+            }
         } catch (\RuntimeException $e) {
             $output->writeln("<error>Error running job: {$worker->getErrorNumber()}: {$worker->getError()}</error>");
         }
