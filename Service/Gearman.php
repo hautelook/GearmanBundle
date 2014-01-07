@@ -11,6 +11,7 @@ use Hautelook\GearmanBundle\Event\BindWorkloadDataEvent;
 use Hautelook\GearmanBundle\Event\GearmanEvents;
 use Hautelook\GearmanBundle\Model\GearmanJobInterface;
 use Hautelook\GearmanBundle\Model\GearmanJobStatus;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @author Baldur Rensch <baldur.rensch@hautelook.com>
@@ -23,7 +24,7 @@ class Gearman
     protected $gearmanClient;
 
     /**
-     * @var \Symfony\Component\EventDispatcher\EventDispatcher
+     * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
      */
     protected $dispatcher;
 
@@ -33,11 +34,11 @@ class Gearman
     protected $servers;
 
     /**
-     * @param \GearmanClient  $gearmanClient
-     * @param EventDispatcher $dispatcher
-     * @param                 $servers
+     * @param \GearmanClient           $gearmanClient
+     * @param EventDispatcherInterface $dispatcher
+     * @param                          $servers
      */
-    public function __construct(\GearmanClient $gearmanClient, EventDispatcher $dispatcher, $servers)
+    public function __construct(\GearmanClient $gearmanClient, EventDispatcherInterface $dispatcher, $servers)
     {
         $this->gearmanClient = $gearmanClient;
         $this->dispatcher = $dispatcher;
@@ -47,12 +48,12 @@ class Gearman
     /**
      * This adds a job to the Gearman queue.
      *
-     * @param  GearmanJobInterface $job        The job to be done
-     * @param  boolean             $background Whether the job should be run in the background
-     * @param int                  $priority   What priority the job should be run as
+     * @param GearmanJobInterface $job        The job to be done
+     * @param boolean             $background Whether the job should be run in the background
+     * @param int                 $priority   What priority the job should be run as
      *
      * @throws \InvalidArgumentException
-     * @return GearmanJobStatus    Object containing the job handle and return code for the
+     * @return GearmanJobStatus          Object containing the job handle and return code for the
      */
     public function addJob(
         GearmanJobInterface $job,
