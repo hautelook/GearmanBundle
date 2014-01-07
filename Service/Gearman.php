@@ -3,7 +3,7 @@
 namespace Hautelook\GearmanBundle\Service;
 
 use Hautelook\GearmanBundle\Model\GearmanWorker;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
