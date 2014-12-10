@@ -24,6 +24,7 @@
     "require-dev": {
         "symfony/browser-kit": "~2.1",
         "symfony/form": "~2.1",
+        "symfony/validator": "~2.1",
         "symfony/yaml": "~2.1",
         "symfony/class-loader": "~2.1",
         "liip/monitor": "~1.0"
