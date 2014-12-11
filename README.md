@@ -64,7 +64,7 @@ To start submitting a job, first create a class that represents the job:
 
 namespace Acme\DemoBundle\GearmanJob;
 
-use Hautelook\GearmanBundle\GearmanJobInterface;
+use Hautelook\GearmanBundle\Model\GearmanJobInterface;
 
 class StringReverse implements GearmanJobInterface
 {
@@ -86,6 +86,16 @@ class StringReverse implements GearmanJobInterface
     /**
      * {@inheritDoc}
      */
+    public function setWorkload(array $workload)
+    {
+        if (isset($workload['str'])) {
+            $this->string = $str;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getFunctionName()
     {
         return 'string_reverse';
@@ -94,11 +104,8 @@ class StringReverse implements GearmanJobInterface
     /**
      * {@inheritDoc}
      */
-    public function setWorkload(array $workload)
+    public function getUnique()
     {
-        if (isset($workload['str'])) {
-            $this->string = $str;
-        }
     }
 }
 
@@ -111,7 +118,7 @@ $job = new Acme\DemoBundle\GearmanJob\StringReverse();
 $job->setString('string to reverse');
 $jobStatus = $this->get('hautelook_gearman.service.gearman')->addJob($job);
 if (!$jobStatus->isSuccessful()) {
-    $logger->err("Gearman Job " . $jobStatus->getFunctionName() . " failed with " . $jobStatus->getReturnCode());
+    $logger->err('Gearman Job ' . $jobStatus->getFunctionName() . ' failed with ' . $jobStatus->getReturnCode());
 }
 ```
 
