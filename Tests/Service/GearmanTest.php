@@ -2,12 +2,11 @@
 
 namespace Hautelook\GearmanBundle\Tests\Service;
 
-use \GearmanClient;
-
+use GearmanClient;
+use Hautelook\GearmanBundle\Event\BindWorkloadDataEvent;
+use Hautelook\GearmanBundle\Event\GearmanEvents;
 use Hautelook\GearmanBundle\Model\GearmanJobInterface;
 use Hautelook\GearmanBundle\Service\Gearman as GearmanService;
-use Hautelook\GearmanBundle\Event\GearmanEvents;
-use Hautelook\GearmanBundle\Event\BindWorkloadDataEvent;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 

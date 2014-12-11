@@ -2,15 +2,13 @@
 
 namespace Hautelook\GearmanBundle\Service;
 
-use Hautelook\GearmanBundle\Model\GearmanWorker;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-
 use Hautelook\GearmanBundle\Event\BindWorkloadDataEvent;
 use Hautelook\GearmanBundle\Event\GearmanEvents;
 use Hautelook\GearmanBundle\Model\GearmanJobInterface;
 use Hautelook\GearmanBundle\Model\GearmanJobStatus;
+use Hautelook\GearmanBundle\Model\GearmanWorker;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**

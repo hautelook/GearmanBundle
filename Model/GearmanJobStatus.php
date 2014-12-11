@@ -2,8 +2,6 @@
 
 namespace Hautelook\GearmanBundle\Model;
 
-use Hautelook\GearmanBundle\Model\GearmanJobInterface;
-
 /**
  * Expose details about the Gearman job handle returned after the task is scheduled to run
  * @author Brandon Woodmansee <brandon.woodmansee@hautelook.com>
