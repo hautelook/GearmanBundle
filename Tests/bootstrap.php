@@ -15,5 +15,5 @@ if ((!$loader = includeIfExists(__DIR__.'/../vendor/autoload.php')) && (!$loader
 
 // This creates a GearmanClient stub if it does not exist
 if (!class_exists('\\GearmanClient')) {
-    include_once(dirname(__FILE__) . "/GearmanClientStub.php");
+    include_once dirname(__FILE__)."/GearmanClientStub.php";
 }

@@ -34,7 +34,7 @@ class GearmanMonitorTest extends \PHPUnit_Framework_TestCase
                         'running' => 0,
                         'workers' => 0,
                     ),
-                )
+                ),
             ),
             array()
         );
@@ -58,12 +58,12 @@ class GearmanMonitorTest extends \PHPUnit_Framework_TestCase
                         'running' => 0,
                         'workers' => 0,
                     ),
-                )
+                ),
             ),
             array(
                 'queue_1' => array(
-                    'queue_size' => 10
-                )
+                    'queue_size' => 10,
+                ),
             )
         );
 
@@ -86,12 +86,12 @@ class GearmanMonitorTest extends \PHPUnit_Framework_TestCase
                         'running' => 0,
                         'workers' => 0,
                     ),
-                )
+                ),
             ),
             array(
                 'queue_1' => array(
-                    'queue_size' => 10
-                )
+                    'queue_size' => 10,
+                ),
             )
         );
 
@@ -117,12 +117,12 @@ class GearmanMonitorTest extends \PHPUnit_Framework_TestCase
                         'running' => 0,
                         'workers' => 1,
                     ),
-                )
+                ),
             ),
             array(
                 'queue_1' => array(
-                    'workers' => 1
-                )
+                    'workers' => 1,
+                ),
             )
         );
 
@@ -145,12 +145,12 @@ class GearmanMonitorTest extends \PHPUnit_Framework_TestCase
                         'running' => 0,
                         'workers' => 1,
                     ),
-                )
+                ),
             ),
             array(
                 'queue_1' => array(
-                    'workers' => 2
-                )
+                    'workers' => 2,
+                ),
             )
         );
 
@@ -176,13 +176,13 @@ class GearmanMonitorTest extends \PHPUnit_Framework_TestCase
                         'running' => 0,
                         'workers' => 1,
                     ),
-                )
+                ),
             ),
             array(
                 'queue_1' => array(
                     'queue_size' => 10,
-                    'workers' => 1
-                )
+                    'workers' => 1,
+                ),
             )
         );
 
@@ -205,13 +205,13 @@ class GearmanMonitorTest extends \PHPUnit_Framework_TestCase
                         'running' => 0,
                         'workers' => 1,
                     ),
-                )
+                ),
             ),
             array(
                 'queue_1' => array(
                     'queue_size' => 9,
-                    'workers' => 2
-                )
+                    'workers' => 2,
+                ),
             )
         );
 
@@ -220,7 +220,7 @@ class GearmanMonitorTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Liip\Monitor\Result\CheckResult', $result);
         $this->assertEquals(CheckResult::CRITICAL, $result->getStatus());
         $this->assertEquals(
-            "server_1: queue_1: queue size should be less then 9, but count is 10 server_1: " .
+            "server_1: queue_1: queue size should be less then 9, but count is 10 server_1: ".
             "queue_1: queue should have at least 2, but only 1 available",
             $result->getMessage()
         );
@@ -238,13 +238,13 @@ class GearmanMonitorTest extends \PHPUnit_Framework_TestCase
                         'running' => 0,
                         'workers' => 1,
                     ),
-                )
+                ),
             ),
             array(
                 'queue_1' => array(
                     'queue_size' => 9,
-                    'workers' => 2
-                )
+                    'workers' => 2,
+                ),
             )
         );
 
@@ -272,14 +272,14 @@ class GearmanMonitorTest extends \PHPUnit_Framework_TestCase
                         'queue' => 10,
                         'running' => 0,
                         'workers' => 1,
-                    )
-                )
+                    ),
+                ),
             ),
             array(
                 'queue_2' => array(
                     'queue_size' => 10,
-                    'workers' => 1
-                )
+                    'workers' => 1,
+                ),
             )
         );
 

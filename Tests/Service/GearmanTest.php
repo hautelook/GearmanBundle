@@ -26,8 +26,7 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $servers = array('test_server_1' =>
-            array('host' => 'localhost', 'port' => 4730),
+        $servers = array('test_server_1' => array('host' => 'localhost', 'port' => 4730),
         );
         $this->gearmanClient = $this->getMockBuilder('GearmanClient')
             ->getMock();
@@ -241,7 +240,7 @@ class TestJob implements GearmanJobInterface
 
     public function getUnique()
     {
-        return null;
+        return;
     }
 }
 

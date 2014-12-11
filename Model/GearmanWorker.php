@@ -38,7 +38,7 @@ class GearmanWorker
      * Have the worker work. If this function returns fails, call GearmanWorker::getError() and
      * GearmanWorker::getErrorNumber() to get more detail about the failure.
      *
-     * @return bool true always
+     * @return bool              true always
      * @throws \RuntimeException if the worker returned an error.
      */
     public function work()
