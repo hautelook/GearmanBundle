@@ -2,12 +2,11 @@
 
 namespace Hautelook\GearmanBundle\Tests\Service;
 
-use \GearmanClient;
-
+use GearmanClient;
+use Hautelook\GearmanBundle\Event\BindWorkloadDataEvent;
+use Hautelook\GearmanBundle\Event\GearmanEvents;
 use Hautelook\GearmanBundle\Model\GearmanJobInterface;
 use Hautelook\GearmanBundle\Service\Gearman as GearmanService;
-use Hautelook\GearmanBundle\Event\GearmanEvents;
-use Hautelook\GearmanBundle\Event\BindWorkloadDataEvent;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -27,8 +26,7 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $servers = array('test_server_1' =>
-            array('host' => 'localhost', 'port' => 4730),
+        $servers = array('test_server_1' => array('host' => 'localhost', 'port' => 4730),
         );
         $this->gearmanClient = $this->getMockBuilder('GearmanClient')
             ->getMock();
@@ -242,7 +240,7 @@ class TestJob implements GearmanJobInterface
 
     public function getUnique()
     {
-        return null;
+        return;
     }
 }
 

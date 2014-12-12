@@ -12,7 +12,6 @@ class AppKernel extends Kernel
         return array(
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Hautelook\GearmanBundle\HautelookGearmanBundle(),
-
             new \Hautelook\GearmanBundle\Tests\Functional\TestBundle\TestBundle(),
         );
     }
