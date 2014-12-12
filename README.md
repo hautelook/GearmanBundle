@@ -53,6 +53,15 @@ hautelook_gearman:
             port: 4567
 ```
 
+or use default values (localhost:4730):
+
+```yml
+# Hautelook Gearman Bundle
+hautelook_gearman:
+    servers:
+        default: ~
+```
+
 ## Usage
 
 ### Jobs
