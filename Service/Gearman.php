@@ -7,8 +7,6 @@ use Hautelook\GearmanBundle\Event\GearmanEvents;
 use Hautelook\GearmanBundle\Model\GearmanJobInterface;
 use Hautelook\GearmanBundle\Model\GearmanJobStatus;
 use Hautelook\GearmanBundle\Model\GearmanWorker;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -99,38 +97,18 @@ class Gearman
      * Creates a worker with the given job name(s). The worker will call the $callBackName function
      * on a $fqClassName object.
      *
-     * @param array              $jobNames
-     * @param string             $fqClassName
-     * @param string             $callBackName
-     * @param ContainerInterface $container
+     * @param array    $jobNames
+     * @param callable $callback
      *
      * @throws \InvalidArgumentException if the callback is invalid
      *
      * @return GearmanWorker
      */
-    public function createWorker(array $jobNames, $fqClassName, $callBackName, ContainerInterface $container = null)
+    public function createWorker(array $jobNames, $callback)
     {
         $worker = new GearmanWorker($this->servers);
-
-        if (!class_exists($fqClassName)) {
-            throw new \InvalidArgumentException("Class {$fqClassName} does not exist");
-        }
-
-        $workerObj = new $fqClassName();
-
-        if (!method_exists($workerObj, $callBackName)) {
-            throw new \InvalidArgumentException("Method {$callBackName} does not exist in {$fqClassName}");
-        }
-
-        $workerReflObj = new \ReflectionObject($workerObj);
-
-        if ($workerReflObj->implementsInterface('\Symfony\Component\DependencyInjection\ContainerAwareInterface')) {
-            /** @var $workerObj ContainerAwareInterface */
-            $workerObj->setContainer($container);
-        }
-
         foreach ($jobNames as $jobName) {
-            $worker->addCallbackFunction($jobName, array($workerObj, $callBackName));
+            $worker->addCallbackFunction($jobName, $callback);
         }
 
         return $worker;

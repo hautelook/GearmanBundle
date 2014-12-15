@@ -2,17 +2,16 @@
 
 namespace Hautelook\GearmanBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
 /**
  * Class GearmanRunCommand
  * @author Baldur Rensch <baldur.rensch@hautelook.com>
  */
-class GearmanRunCommand extends ContainerAwareCommand
+class GearmanRunCommand extends AbstractGearmanRunCommand
 {
     protected function configure()
     {
@@ -29,56 +28,32 @@ class GearmanRunCommand extends ContainerAwareCommand
                 InputArgument::REQUIRED,
                 'The method name of the worker function'
             )
-            ->addArgument(
-                'job_names',
-                InputArgument::IS_ARRAY | InputArgument::REQUIRED,
-                'The name of one or multiple gearman jobs'
-            )
-            ->addOption(
-                'max-jobs',
-                'm',
-                InputOption::VALUE_REQUIRED,
-                'The maximum number of jobs to be run by a worker after which the worker should exit'
-            );
+        ;
+        parent::configure();
     }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @throws \RuntimeException in case there is no or an invalid feed url is given.
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function getCallback(InputInterface $input, OutputInterface $output)
     {
         $fqWorkerClass = $input->getArgument('fq_worker_class');
         $method = $input->getArgument('method');
-        $jobNames = $input->getArgument('job_names');
 
-        $maxJobs = (int) $input->getOption('max-jobs');
-
-        if ($maxJobs < 1) {
-            $maxJobs = false;
+        if (!class_exists($fqWorkerClass)) {
+            throw new \InvalidArgumentException("Class {$fqWorkerClass} does not exist");
         }
 
-        /** @var $gearman \Hautelook\GearmanBundle\Service\Gearman */
-        $gearman = $this->getContainer()->get('hautelook_gearman.service.gearman');
-        /** @var $worker \Hautelook\GearmanBundle\Model\GearmanWorker */
-        $worker = $gearman->createWorker($jobNames, $fqWorkerClass, $method, $this->getContainer());
+        $worker = new $fqWorkerClass();
 
-        $jobNamesString = implode(', ', $jobNames);
-        $output->writeln("<info>Gearman worker created for: {$jobNamesString}</info>");
-
-        $jobsDone = 0;
-
-        try {
-            while (($maxJobs === false || $jobsDone < $maxJobs) && $worker->work()) {
-                $jobsDone++;
-            }
-
-            if ($maxJobs) {
-                $output->writeln("<info>Gearman worker finished after {$maxJobs} jobs</info>");
-            }
-        } catch (\RuntimeException $e) {
-            $output->writeln("<error>Error running job: {$worker->getErrorNumber()}: {$worker->getError()}</error>");
+        if (!method_exists($worker, $method)) {
+            throw new \InvalidArgumentException("Method {$method} does not exist in {$fqWorkerClass}");
         }
+
+        $workerReflection = new \ReflectionObject($worker);
+
+        if ($workerReflection->implementsInterface('\Symfony\Component\DependencyInjection\ContainerAwareInterface')) {
+            /** @var $workerObj ContainerAwareInterface */
+            $workerObj->setContainer($this->getContainer());
+        }
+
+        return array($worker, $method);
     }
 }
