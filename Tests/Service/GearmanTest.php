@@ -161,8 +161,17 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
     {
         $worker = $this->gearmanService->createWorker(
             array('test_job'),
-            'Hautelook\\GearmanBundle\\Tests\\Service\\TestWorker',
-            'work'
+            array(new TestWorker(), 'work')
+        );
+
+        $this->assertInstanceOf('Hautelook\GearmanBundle\Model\GearmanWorker', $worker);
+    }
+
+    public function testCreateStaticWorker()
+    {
+        $worker = $this->gearmanService->createWorker(
+            array('test_job'),
+            array('Hautelook\\GearmanBundle\\Tests\\Service\\TestWorker', 'staticWork')
         );
 
         $this->assertInstanceOf('Hautelook\GearmanBundle\Model\GearmanWorker', $worker);
@@ -172,8 +181,7 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
     {
         $worker = $this->gearmanService->createWorker(
             array('test_job_1', 'test_job_2', 'test_job_3'),
-            'Hautelook\\GearmanBundle\\Tests\\Service\\TestWorker',
-            'work'
+            array(new TestWorker(), 'work')
         );
 
         $this->assertInstanceOf('Hautelook\GearmanBundle\Model\GearmanWorker', $worker);
@@ -187,8 +195,7 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
     {
         $worker = $this->gearmanService->createWorker(
             'test_job',
-            'Hautelook\\GearmanBundle\\Tests\\Service\\TestWorker',
-            'work'
+            array(new TestWorker(), 'work')
         );
 
         $this->assertInstanceOf('Hautelook\GearmanBundle\Model\GearmanWorker', $worker);
@@ -198,21 +205,6 @@ class GearmanTest extends \PHPUnit_Framework_TestCase
     {
         $worker = $this->gearmanService->createNoopWorker('test_job');
         $this->assertInstanceOf('Hautelook\GearmanBundle\Model\GearmanWorker', $worker);
-    }
-
-    public function testCreateContainerAwareWorker()
-    {
-        $testContainer = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
-
-        $worker = $this->gearmanService->createWorker(
-            array('test_job'),
-            'Hautelook\\GearmanBundle\\Tests\\Service\\ContainerAwareTestWorker',
-            'work',
-            $testContainer
-        );
-
-        $this->assertInstanceOf('Hautelook\GearmanBundle\Model\GearmanWorker', $worker);
-        $this->assertSame($testContainer, ContainerAwareTestWorker::$container);
     }
 
     public function testGetGearmanClient()
@@ -255,6 +247,10 @@ class TestJobWithUnique extends TestJob
 class TestWorker
 {
     public function work(\GearmanJob $job)
+    {
+    }
+
+    public static function staticWork(\GearmanJob $job)
     {
     }
 }
