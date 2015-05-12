@@ -50,7 +50,7 @@ class Gearman
      * @param boolean             $background Whether the job should be run in the background
      * @param int                 $priority   What priority the job should be run as
      *
-     * @throws \InvalidArgumentException
+     * @throws \InvalidArgumentException, \GearmanException
      * @return GearmanJobStatus          Object containing the job handle and return code for the
      */
     public function addJob(
@@ -65,6 +65,10 @@ class Gearman
 
         $workload = $job->getWorkload();
         $workload = serialize($workload);
+
+        if (!@$this->gearmanClient->ping($workload)) {
+            throw new \GearmanException('Gearman service is unavailable');
+        }
 
         if ($background) {
             if (GearmanJobInterface::PRIORITY_LOW == $priority) {
