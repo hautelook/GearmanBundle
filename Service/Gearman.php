@@ -66,6 +66,11 @@ class Gearman
         $workload = $job->getWorkload();
         $workload = serialize($workload);
 
+        //GEARMAN_COULD_NOT_CONNECT: 26
+        if (@$this->gearmanClient->ping($workload) !== 26) {
+            return new GearmanJobStatus($job, null, $this->gearmanClient->returnCode());
+        }
+
         if ($background) {
             if (GearmanJobInterface::PRIORITY_LOW == $priority) {
                 $jobHandle = $this->gearmanClient->doLowBackground($functionToCall, $workload, $job->getUnique());
